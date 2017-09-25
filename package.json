@@ -1,0 +1,19 @@
+{
+  "name": "eslint-config",
+  "version": "1.0.0",
+  "description": "Default eslint configuration",
+  "main": "index.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tuomashatakka/eslint-config.git"
+  },
+  "author": "tuomashatakka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tuomashatakka/eslint-config/issues"
+  },
+  "homepage": "https://github.com/tuomashatakka/eslint-config#readme"
+}
