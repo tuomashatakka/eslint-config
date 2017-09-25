@@ -1,6 +1,6 @@
 {
   "name": "@tuomashatakka/eslint-config",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Default eslint configuration",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/tuomashatakka/eslint-config/issues"
   },
-  "homepage": "https://github.com/tuomashatakka/eslint-config#readme"
+  "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
+  "devDependencies": {
+    "babel-eslint": "^8.0.0",
+    "eslint": "^4.7.2",
+    "eslint-plugin-flowtype": "^2.36.0",
+    "eslint-plugin-react": "^7.4.0"
+  }
 }

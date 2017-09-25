@@ -1,0 +1,1 @@
+# ES Lintin' configuratin' :v
