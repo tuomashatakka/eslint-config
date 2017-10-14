@@ -4,6 +4,7 @@
   "description": "Default eslint configuration",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm i --save-dev eslint eslint-plugin-react eslint-plugin-flowtype babel-eslint",
     "test": "exit 0"
   },
   "repository": {
