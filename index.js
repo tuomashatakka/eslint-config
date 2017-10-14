@@ -38,26 +38,25 @@ module.exports = {
     strict: 0,
 
     // Warnings
-    semi:         [ 1, 'never' ],
-    complexity:   [ 1, 4 ],
+    semi:        [ 'warn', 'never' ],
+    complexity:  [ 'warn', 4 ],
+    'max-depth': [ 'warn', 3 ],
+    'max-lines': [ 'warn', 320 ],
+    'max-len':   [ 'warn', 120 ],
 
-    'max-depth':  [ 1, 3 ],
-    'max-lines':  [ 1, 320 ],
-    'max-len':    [ 1, 120 ],
-
-    'no-tabs':      1,
-    'no-console':   1,
-    'dot-notation': 1,
-    'class-methods-use-this': 1,
+    'no-tabs':                'warn',
+    'no-console':             'warn',
+    'dot-notation':           'warn',
+    'class-methods-use-this': 'warn',
 
     // Errors
-    eqeqeq:         [ 2, 'smart' ],
-    'use-isnan':      2,
+    eqeqeq:      [ 'error', 'smart' ],
+    'use-isnan':   'error',
 
-    'no-undef':       2,
-    'no-obj-calls':   2,
-    'no-unused-vars': 2
-    'no-array-constructor': 2,
+    'no-undef':             'error',
+    'no-obj-calls':         'error',
+    'no-unused-vars':       'error',
+    'no-array-constructor': 'error',
   },
   settings: {
     react: {
