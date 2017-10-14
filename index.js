@@ -25,6 +25,7 @@ module.exports = {
     Set:        true,
     Map:        true,
     Proxy:      true,
+    Symbol:     true,
     Promise:    true,
     WeakSet:    true,
     WeakMap:    true,
@@ -36,19 +37,23 @@ module.exports = {
     'max-depth':      [ 'warn',   3 ],
     semi:             [ 'warn',   'never' ],
     eqeqeq:           [ 'error',  'smart' ],
-    complexity:       [ 'error',  3 ],
-    strict:           0,
+    complexity:       [ 'info',  4 ],
 
-    'no-tabs':        1,
-    'no-console':     1,
-    'dot-notation':   1,
+    // Ignored
+    strict: 0,
+
+    // Warnings
+    'no-tabs':                1,
+    'no-console':             1,
+    'dot-notation':           1,
     'class-methods-use-this': 1,
 
+    // Errors
     'no-array-constructor': 2,
-    'no-obj-calls':   2,
-    'use-isnan':      2,
-    'no-undef':       2,
-    'no-unused-vars': 2
+    'no-obj-calls':         2,
+    'use-isnan':            2,
+    'no-undef':             2,
+    'no-unused-vars':       2
   },
   settings: {
     react: {
