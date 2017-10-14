@@ -1,10 +1,17 @@
 
 
 module.exports = {
+  parser: 'babel-eslint',
   env: {
-    browser: true,
-    node: true
+    node:     true,
+    jasmine:  true,
+    browser:  true,
+    commonjs: true,
   },
+  plugins: [
+    'react',
+    'flowtype'
+  ],
   extends: [
     "plugin:flowtype/recommended",
     "plugin:react/recommended",
@@ -16,11 +23,6 @@ module.exports = {
       jsx: true
     }
   },
-  parser: 'babel-eslint',
-  plugins: [
-    'react',
-    'flowtype'
-  ],
   globals: {
     Set:        true,
     Map:        true,
@@ -32,28 +34,30 @@ module.exports = {
     Uint8Array: true,
   },
   rules: {
-    'max-len':        [ 'warn',   120 ],
-    'max-lines':      [ 'warn',   320 ],
-    'max-depth':      [ 'warn',   3 ],
-    semi:             [ 'warn',   'never' ],
-    eqeqeq:           [ 'error',  'smart' ],
-    complexity:       [ 'info',  4 ],
-
     // Ignored
     strict: 0,
 
     // Warnings
-    'no-tabs':                1,
-    'no-console':             1,
-    'dot-notation':           1,
+    semi:         [ 1, 'never' ],
+    complexity:   [ 1, 4 ],
+
+    'max-depth':  [ 1, 3 ],
+    'max-lines':  [ 1, 320 ],
+    'max-len':    [ 1, 120 ],
+
+    'no-tabs':      1,
+    'no-console':   1,
+    'dot-notation': 1,
     'class-methods-use-this': 1,
 
     // Errors
+    eqeqeq:         [ 2, 'smart' ],
+    'use-isnan':      2,
+
+    'no-undef':       2,
+    'no-obj-calls':   2,
+    'no-unused-vars': 2
     'no-array-constructor': 2,
-    'no-obj-calls':         2,
-    'use-isnan':            2,
-    'no-undef':             2,
-    'no-unused-vars':       2
   },
   settings: {
     react: {
