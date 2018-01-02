@@ -1,5 +1,17 @@
 
 
+const exceptMethods = [
+  'shouldComponentUpdate',
+  'render',
+  'componentDidMount',
+  'componentDidCatch',
+  'componentDidUpdate',
+  'componentWillMount',
+  'componentWillUpdate',
+  'componentWillUnmount',
+  'componentWillReceiveProps',
+]
+
 module.exports = {
   parser: 'babel-eslint',
   env: {
@@ -47,7 +59,7 @@ module.exports = {
     'no-tabs':                'warn',
     'no-console':             'warn',
     'dot-notation':           'warn',
-    'class-methods-use-this': 'warn',
+    'class-methods-use-this': [ 'warn', { exceptMethods } ],
 
     // Errors
     eqeqeq:      [ 'error', 'smart' ],
