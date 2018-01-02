@@ -51,9 +51,9 @@ module.exports = {
 
     // Warnings
     semi:        [ 'warn', 'never' ],
-    complexity:  [ 'warn', 4 ],
+    complexity:  [ 'warn', 6 ],
     'max-depth': [ 'warn', 3 ],
-    'max-lines': [ 'warn', 320 ],
+    'max-lines': [ 'warn', 600 ],
     'max-len':   [ 'warn', 120 ],
 
     'no-tabs':                'warn',
