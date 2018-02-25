@@ -12,6 +12,14 @@ const exceptMethods = [
   'componentWillReceiveProps',
 ]
 
+const parserOptions = {
+  ecmaVersion: 7,
+  sourceType: 'module',
+  ecmaFeatures: {
+    jsx: true
+  }
+}
+
 const globals = [
   'Set',
   'Map',
@@ -30,30 +38,24 @@ const W      = 'warn'
 const E      = 'error'
 
 module.exports = {
+
   parser: 'babel-eslint',
+  parserOptions,
+
   env: {
     node:     true,
     jasmine:  true,
     browser:  true,
     commonjs: true,
   },
+
   plugins: [
     'react',
     'flow',
     'import',
   ],
-  extends: [
-    "plugin:flowtype/recommended",
-    "plugin:react/recommended",
-  ],
-  parserOptions: {
-    ecmaVersion: 7,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true
-    }
-  },
-  globals: globals.reduce((g, c) => Object.assign(g, { [c]: true }), {}),
+
+
   rules: {
     // Ignored
     strict: 0,
@@ -66,8 +68,8 @@ module.exports = {
     'max-len':   [ W, 140 ],
 
     'no-tabs':                W,
-    'debugger':               W,
     'no-console':             W,
+    'no-debugger':            W,
     'dot-notation':           W,
     'class-methods-use-this': [ W, { exceptMethods } ],
 
@@ -102,13 +104,17 @@ module.exports = {
       ]
     }]
   },
+
   settings: {
     react: {
       pragma: 'React',
       version: "16.3.0"
     },
-    flowtype: {
+    flow: {
       onlyFilesWithFlowAnnotation: false
     }
-  }
+  },
+
+  globals: globals.reduce((g, c) => Object.assign(g, { [c]: true }), {}),
+
 }
