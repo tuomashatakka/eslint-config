@@ -4,7 +4,7 @@
   "description": "Default eslint configuration",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm i --save-dev eslint eslint-plugin-react eslint-plugin-flowtype babel-eslint",
+    "postinstall": "./dependencies.sh",
     "test": "exit 0"
   },
   "repository": {
@@ -18,11 +18,10 @@
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
-    "eslint": "^4.7.2"
-  },
-  "devDependencies": {
-    "babel-eslint": "^8.0.0",
-    "eslint-plugin-flowtype": "^2.36.0",
-    "eslint-plugin-react": "^7.4.0"
+    "eslint": ">=4.0.0",
+    "babel-eslint": ">=8.0.0",
+    "eslint-plugin-flow": "*",
+    "eslint-plugin-react": "*",
+    "eslint-plugin-import": "*"
   }
 }
