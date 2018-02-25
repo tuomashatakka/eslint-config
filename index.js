@@ -71,6 +71,10 @@ module.exports = {
     'dot-notation':           W,
     'class-methods-use-this': [ W, { exceptMethods } ],
 
+    'comma-spacing':         [ W, { before: false, after: true, }],
+    'array-bracket-spacing': [ W, always, { arraysInArrays: false }],
+    'object-curly-spacing':  [ W, always, { objectsInObjects: false }],
+
     // Errors
     eqeqeq:      [ E, 'smart' ],
     'use-isnan':   E,
@@ -81,13 +85,6 @@ module.exports = {
     'no-array-constructor': E,
     'no-func-assign':       E,
     'no-class-assign':       E,
-
-    'comma-spacing': [ W, {
-      before: false,
-      after: true,
-    }],
-    'array-bracket-spacing': [ always, { arraysInArrays: false }],
-    'object-curly-spacing':  [ always, { objectsInObjects: false }],
 
     'import/no-mutable-exports':     E,
     'import/prefer-default-export':  E,
