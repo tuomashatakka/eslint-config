@@ -4,7 +4,7 @@
   "description": "Default eslint configuration",
   "main": "index.js",
   "scripts": {
-    "postinstall": "./dependencies.sh",
+    "postinstall": "echo 'Please run ./node_modules/@tuomashatakka/eslint-config/dependencies.sh to install the dependencies.'",
     "test": "exit 0"
   },
   "repository": {
@@ -23,12 +23,5 @@
     "eslint-plugin-flow": "*",
     "eslint-plugin-react": "*",
     "eslint-plugin-import": "*"
-  },
-  "devDependencies": {
-    "babel-eslint": "^8.2.2",
-    "eslint": "^4.18.1",
-    "eslint-plugin-flow": "^2.29.1",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-react": "^7.7.0"
   }
 }
