@@ -20,6 +20,16 @@ const parserOptions = {
   }
 }
 
+const settings = {
+  react: {
+    pragma: 'React',
+    version: "16.3.0"
+  },
+  flow: {
+    onlyFilesWithFlowAnnotation: false
+  }
+}
+
 const globals = [
   'Set',
   'Map',
@@ -40,6 +50,7 @@ const E      = 'error'
 module.exports = {
 
   parser: 'babel-eslint',
+  settings,
   parserOptions,
 
   env: {
@@ -67,15 +78,14 @@ module.exports = {
     'max-lines': [ W, 720 ],
     'max-len':   [ W, 140 ],
 
-    'no-tabs':                W,
-    'no-console':             W,
-    'no-debugger':            W,
-    'dot-notation':           W,
+    'no-tabs':      W,
+    'no-console':   W,
+    'no-debugger':  W,
+    'dot-notation': W,
+    'comma-spacing':          [ W, { before: false, after: true, }],
     'class-methods-use-this': [ W, { exceptMethods } ],
-
-    'comma-spacing':         [ W, { before: false, after: true, }],
-    'array-bracket-spacing': [ W, always, { arraysInArrays: false }],
-    'object-curly-spacing':  [ W, always, { objectsInObjects: false }],
+    'array-bracket-spacing':  [ W, always, { arraysInArrays: false }],
+    'object-curly-spacing':   [ W, always, { objectsInObjects: false }],
 
     // Errors
     eqeqeq:      [ E, 'smart' ],
@@ -84,10 +94,11 @@ module.exports = {
     'no-undef':             E,
     'no-obj-calls':         E,
     'no-unused-vars':       E,
-    'no-array-constructor': E,
     'no-func-assign':       E,
-    'no-class-assign':       E,
+    'no-class-assign':      E,
+    'no-array-constructor': E,
 
+    // Import
     'import/no-mutable-exports':     E,
     'import/prefer-default-export':  E,
     'import/no-unassigned-import': [ E, { allow: [
@@ -95,25 +106,22 @@ module.exports = {
       'babel-*',
       'reactotron',
     ]}],
-    'import/no-extraneous-dependencies': [ E, {
-      'devDependencies':  [
-        '**/*.{test,spec}.js',
-        '**/{test,spec}/*.js',
-        '**/*.{dev,develop,development}.js{x,}',
-        '**/{dev,develop,development}/*.js{x,}',
-      ]
-    }]
+    "import/no-extraneous-dependencies": 0,
+    // 'import/no-extraneous-dependencies': [ E, {
+    //   'devDependencies':  [
+    //     '**/*.{test,spec}.js',
+    //     '**/{test,spec}/*.js',
+    //     '**/*.{dev,develop,development}.js{x,}',
+    //     '**/{dev,develop,development}/*.js{x,}',
+    //   ]
+    // }],
+
+    // React
+    "react/jsx-uses-vars":      E,
+    "react/jsx-uses-react":     E,
+    "react/react-in-jsx-scope": E,
   },
 
-  settings: {
-    react: {
-      pragma: 'React',
-      version: "16.3.0"
-    },
-    flow: {
-      onlyFilesWithFlowAnnotation: false
-    }
-  },
 
   globals: globals.reduce((g, c) => Object.assign(g, { [c]: true }), {}),
 
