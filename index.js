@@ -1,88 +1,66 @@
+const { reduce } = require('./utils')
+const constants  = require('./constants')
 
+// Shortcuts
+const N = 0, W = 'warn', E = 'error', before = true, after = true, always = 'always', never = 'never',  any = 'any', dir = 'directive'
+const vars = [ 'const', 'let', 'var' ]
 
-const exceptMethods = [
-  'shouldComponentUpdate',
-  'render',
-  'componentDidMount',
-  'componentDidCatch',
-  'componentDidUpdate',
-  'componentWillMount',
-  'componentWillUpdate',
-  'componentWillUnmount',
-  'componentWillReceiveProps',
-]
+// Constants
+const env             = reduce(constants.env)
+const globals         = reduce(constants.globals)
+const plugins         = constants.plugins
+const comments        = constants.comments
+const indentation     = constants.indentation
+const exceptMethods   = constants.exceptMethods
+const allowedImports  = constants.allowedImports
 
 const parserOptions = {
-  ecmaVersion: 7,
-  sourceType: 'module',
-  ecmaFeatures: {
-    jsx: true
-  }
-}
+  sourceType:   'module',
+  ecmaVersion:  7,
+  ecmaFeatures: { jsx: true }}
 
 const settings = {
   react: {
-    pragma: 'React',
-    version: "16.3.0"
-  },
+    pragma:  'React',
+    version: '16.3.0' },
   flow: {
-    onlyFilesWithFlowAnnotation: false
-  }
+    onlyFilesWithFlowAnnotation: false }
 }
 
-const globals = [
-  'Set',
-  'Map',
-  'Proxy',
-  'Symbol',
-  'Promise',
-  'WeakSet',
-  'WeakMap',
-  'Uint8Array',
-  '__DEV__',
+const statements = [
+  [ always,  any,   vars ],
+  [ always,  vars,  any ],
+  [ always,  dir,   any ],
+  [ any,     vars,  vars ],
+  [ any,     dir,   dir ]
 ]
 
-const always = 'always'
-const never  = 'never'
-const W      = 'warn'
-const E      = 'error'
-
 module.exports = {
-
+  env,
   parser: 'babel-eslint',
+  globals,
+  plugins,
   settings,
   parserOptions,
 
-  env: {
-    node:     true,
-    jasmine:  true,
-    browser:  true,
-    commonjs: true,
-  },
-
-  plugins: [
-    'react',
-    'flow',
-    'import',
-  ],
-
-
   rules: {
     // Ignored
-    strict: 0,
+    strict: N,
 
     // Warnings
-    semi:        [ W, never ],
-    complexity:  [ W, 6 ],
-    'max-depth': [ W, 3 ],
-    'max-lines': [ W, 720 ],
-    'max-len':   [ W, 140 ],
+    semi:             [ W, never ],
+    complexity:       [ W, 6 ],
+    'max-depth':      [ W, 3 ],
+    'max-lines':      [ W, 400 ],
+    'max-len':        [ W, 140 ],
+    'max-statements': [ W, 10 ],
 
-    'no-tabs':      W,
-    'no-console':   W,
-    'no-debugger':  W,
-    'dot-notation': W,
-    'comma-spacing':          [ W, { before: false, after: true, }],
+    'no-tabs':          W,
+    'no-console':       W,
+    'no-debugger':      W,
+    'dot-notation':     W,
+    'no-extra-parens':  W,
+    'comma-spacing':          [ W, { before: false, after }],
     'class-methods-use-this': [ W, { exceptMethods } ],
     'array-bracket-spacing':  [ W, always, { arraysInArrays: false }],
     'object-curly-spacing':   [ W, always, { objectsInObjects: false }],
@@ -93,6 +71,7 @@ module.exports = {
 
     'no-undef':             E,
     'no-obj-calls':         E,
+    'no-new-symbol':        E,
     'no-unused-vars':       E,
     'no-func-assign':       E,
     'no-class-assign':      E,
@@ -101,28 +80,55 @@ module.exports = {
     // Import
     'import/no-mutable-exports':     E,
     'import/prefer-default-export':  E,
-    'import/no-unassigned-import': [ E, { allow: [
-      '**/*.{le,c,sc}ss',
-      'babel-*',
-      'reactotron',
-    ]}],
-    "import/no-extraneous-dependencies": 0,
-    // 'import/no-extraneous-dependencies': [ E, {
-    //   'devDependencies':  [
-    //     '**/*.{test,spec}.js',
-    //     '**/{test,spec}/*.js',
-    //     '**/*.{dev,develop,development}.js{x,}',
-    //     '**/{dev,develop,development}/*.js{x,}',
-    //   ]
-    // }],
+    'import/no-unassigned-import': [ E, { allow: allowedImports }],
+    'import/no-extraneous-dependencies': 0,
 
     // React
-    "react/jsx-uses-vars":      E,
-    "react/jsx-uses-react":     E,
-    "react/react-in-jsx-scope": E,
+    'jsx-quotes':               [ W, 'prefer-single' ],
+    'react/jsx-uses-vars':        E,
+    'react/jsx-uses-react':       E,
+    'react/react-in-jsx-scope':   E,
+    'flowtype/define-flow-type':  E,
+
+
+    'indent': [ 'warn', indentation.depth, indentation.options ],
+
+    'space-before-function-paren': [ 1, {
+      asyncArrow: always,
+      anonymous:  always,
+      named:      always,
+    } ],
+
+    // Whitespace
+    'arrow-spacing':       W,
+    'keyword-spacing':   [ W, { before, after } ],
+    'func-call-spacing': [ W, 'never' ],
+
+    // Padding
+    'implicit-arrow-linebreak':          N,
+    'function-paren-newline':            N,
+    'brace-style':                     [ W, '1tbs' ],
+    'padded-blocks':                   [ W, { classes:  'always', switches: 'always' } ],
+    'arrow-body-style':                [ W, 'as-needed' ],
+    'newline-per-chained-call':        [ W, { ignoreChainWithDepth: 2 } ],
+    'lines-between-class-members':     [ W, 'always', { exceptAfterSingleLine: true } ],
+    'one-var-declaration-per-line':    [ W, 'always' ],
+    'padding-line-between-statements': [ W, ...statements.map(([ blankLine, prev, next ]) => ({ blankLine, prev, next })) ],
+
+    // Comments
+    'multiline-comment-style': [ W, 'separate-lines' ],
+    'line-comment-position':   [ W, { position: 'above', applyDefaultIgnorePatterns: true } ],
+    'lines-around-comment':    [ W, comments ],
+
   },
 
-
-  globals: globals.reduce((g, c) => Object.assign(g, { [c]: true }), {}),
-
 }
+
+// 'import/no-extraneous-dependencies': [ E, {
+//   'devDependencies':  [
+//     '**/*.{test,spec}.js',
+//     '**/{test,spec}/*.js',
+//     '**/*.{dev,develop,development}.js{x,}',
+//     '**/{dev,develop,development}/*.js{x,}',
+//   ]
+// }],
