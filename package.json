@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
-    "eslint": ">=4.0.0",
-    "babel-eslint": ">=8.0.0",
+    "eslint": ">=4.0.0 || >= 5.0.0",
+    "babel-eslint": ">=8.0.0 || >= 9.0.0",
     "eslint-plugin-flow": "*",
     "eslint-plugin-react": "*",
-    "eslint-plugin-import": "*"
+    "eslint-plugin-import": "*",
+    "eslint-import-resolver-webpack": "*",
+    "eslint-plugin-block-padding": "*"
   }
 }

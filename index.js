@@ -15,8 +15,8 @@ const exceptMethods   = constants.exceptMethods
 const allowedImports  = constants.allowedImports
 
 const parserOptions = {
-  sourceType:   'module',
   ecmaVersion:  7,
+  sourceType:   'module',
   ecmaFeatures: { jsx: true }}
 
 const settings = {
@@ -28,11 +28,14 @@ const settings = {
 }
 
 const statements = [
-  [ always,  any,   vars ],
-  [ always,  vars,  any ],
-  [ always,  dir,   any ],
-  [ any,     vars,  vars ],
-  [ any,     dir,   dir ]
+  [ always,   '*',            vars ],
+  [ always,   'import',       '*' ],
+  [ always,   vars,           '*' ],
+  [ any,      vars,           vars ],
+  [ any,      'import',       'import' ],
+  [ always,   'empty',        'block-like' ],
+  [ always,   'block-like',   vars ],
+  [ always,   '*',            'block-like' ],
 ]
 
 module.exports = {
@@ -44,6 +47,7 @@ module.exports = {
   parserOptions,
 
   rules: {
+
     // Ignored
     strict: N,
 
@@ -61,9 +65,9 @@ module.exports = {
     'dot-notation':     W,
     'no-extra-parens':  W,
     'comma-spacing':          [ W, { before: false, after }],
-    'class-methods-use-this': [ W, { exceptMethods } ],
-    'array-bracket-spacing':  [ W, always, { arraysInArrays: false }],
-    'object-curly-spacing':   [ W, always, { objectsInObjects: false }],
+    'class-methods-use-this': [ W, { exceptMethods }],
+    'array-bracket-spacing':  [ W, always, { arraysInArrays: false, objectsInArrays: false }],
+    'object-curly-spacing':   [ W, always, { objectsInObjects: false, arraysInObjects: false }],
 
     // Errors
     eqeqeq:      [ E, 'smart' ],
@@ -88,7 +92,8 @@ module.exports = {
     'react/jsx-uses-vars':        E,
     'react/jsx-uses-react':       E,
     'react/react-in-jsx-scope':   E,
-    'flowtype/define-flow-type':  E,
+
+    // 'flowtype/define-flow-type':  E,
 
 
     'indent': [ 'warn', indentation.depth, indentation.options ],
@@ -97,28 +102,30 @@ module.exports = {
       asyncArrow: always,
       anonymous:  always,
       named:      always,
-    } ],
+    }],
 
     // Whitespace
     'arrow-spacing':       W,
-    'keyword-spacing':   [ W, { before, after } ],
+    'keyword-spacing':   [ W, { before, after }],
     'func-call-spacing': [ W, 'never' ],
 
     // Padding
     'implicit-arrow-linebreak':          N,
     'function-paren-newline':            N,
     'brace-style':                     [ W, '1tbs' ],
-    'padded-blocks':                   [ W, { classes:  'always', switches: 'always' } ],
+    'padded-blocks':                   [ W, { classes:  'always', switches: 'always' }],
     'arrow-body-style':                [ W, 'as-needed' ],
-    'newline-per-chained-call':        [ W, { ignoreChainWithDepth: 2 } ],
-    'lines-between-class-members':     [ W, 'always', { exceptAfterSingleLine: true } ],
+    'newline-per-chained-call':        [ W, { ignoreChainWithDepth: 2 }],
+    'lines-between-class-members':     [ W, 'always', { exceptAfterSingleLine: true }],
     'one-var-declaration-per-line':    [ W, 'always' ],
     'padding-line-between-statements': [ W, ...statements.map(([ blankLine, prev, next ]) => ({ blankLine, prev, next })) ],
 
     // Comments
     'multiline-comment-style': [ W, 'separate-lines' ],
-    'line-comment-position':   [ W, { position: 'above', applyDefaultIgnorePatterns: true } ],
+    'line-comment-position':   [ W, { position: 'above', applyDefaultIgnorePatterns: true }],
     'lines-around-comment':    [ W, comments ],
+
+    "block-padding/class-definitions": [ 1, 2, { strategy: 'exact' }],
 
   },
 

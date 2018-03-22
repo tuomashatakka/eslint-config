@@ -1,11 +1,13 @@
 #!/bin/bash
 npm install \
   --save-dev \
-  eslint \
-  eslint-plugin-import \
-  eslint-plugin-react \
-  eslint-plugin-flow \
-  babel-eslint \
-  2> /dev/null
+  eslint@latest \
+  eslint-plugin-import@latest \
+  eslint-plugin-react@latest \
+  eslint-plugin-flow@latest \
+  eslint-plugin-flowtype-errors@latest \
+  eslint-plugin-block-padding@latest \
+  eslint-import-webpack-resolver@latest \
+  babel-eslint@latest  # 2> /dev/null
 
 exit 0

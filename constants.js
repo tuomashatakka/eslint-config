@@ -14,6 +14,7 @@ module.exports.plugins = [
   'react',
   'flow',
   'import',
+  'block-padding',
 ]
 
 module.exports.env = [
@@ -42,10 +43,37 @@ module.exports.allowedImports = [
   'reactotron',
 ]
 
+const fn = {
+  body: 1,
+  parameters: 'first'
+}
+
+const cl = {
+  body: 1,
+  arguments: 'first'
+}
+
+const vr = {
+  'var': 2,
+  'let': 2,
+  'const': 3,
+}
+
 module.exports.indentation = {
   depth: 2,
   options: {
+    SwitchCase:       2,
+    ObjectExpression: 1,
     MemberExpression: 1,
+    ConditionalExpression: 1,
+    FunctionDeclaration: fn,
+    FunctionExpression:  fn,
+    CallExpression: cl,
+    ArrayExpression: 'first',
+    ObjectExpression: 'first',
+    ImportDeclaration: 'first',
+    VariableDeclarator: vr
+
   }
 }
 
