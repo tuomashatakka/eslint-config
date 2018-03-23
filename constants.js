@@ -63,17 +63,6 @@ module.exports.indentation = {
   depth: 2,
   options: {
     SwitchCase:       2,
-    ObjectExpression: 1,
-    MemberExpression: 1,
-    ConditionalExpression: 1,
-    FunctionDeclaration: fn,
-    FunctionExpression:  fn,
-    CallExpression: cl,
-    ArrayExpression: 'first',
-    ObjectExpression: 'first',
-    ImportDeclaration: 'first',
-    VariableDeclarator: vr
-
   }
 }
 
