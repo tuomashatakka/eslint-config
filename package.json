@@ -20,10 +20,10 @@
   "peerDependencies": {
     "eslint": ">=4.0.0 || >= 5.0.0",
     "babel-eslint": ">=8.0.0 || >= 9.0.0",
-    "eslint-plugin-flow": "*",
-    "eslint-plugin-react": "*",
-    "eslint-plugin-import": "*",
-    "eslint-import-resolver-webpack": "*",
-    "eslint-plugin-block-padding": "*"
+    "eslint-plugin-flow": "latest",
+    "eslint-plugin-react": "latest",
+    "eslint-plugin-import": "latest",
+    "eslint-import-resolver-webpack": "latest",
+    "eslint-plugin-block-padding": "latest"
   }
 }

@@ -12,8 +12,9 @@ module.exports.exceptMethods = [
 
 module.exports.plugins = [
   'react',
-  'flow',
   'import',
+  'flow',
+  'flowtype-errors',
   'block-padding',
 ]
 
@@ -44,12 +45,10 @@ module.exports.allowedImports = [
 ]
 
 const fn = {
-  body: 1,
   parameters: 'first'
 }
 
 const cl = {
-  body: 1,
   arguments: 'first'
 }
 
@@ -62,13 +61,14 @@ const vr = {
 module.exports.indentation = {
   depth: 2,
   options: {
-    SwitchCase:       2,
+    SwitchCase: 1,
+    CallExpression: cl,
   }
 }
 
 module.exports.comments = {
   beforeBlockComment: true,
-  afterBlockComment:  true,
+  // afterBlockComment:  true,
   beforeLineComment:  true,
   afterLineComment:   false,
   allowClassEnd:      false,

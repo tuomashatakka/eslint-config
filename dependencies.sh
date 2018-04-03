@@ -7,7 +7,8 @@ npm install \
   eslint-plugin-flow@latest \
   eslint-plugin-flowtype-errors@latest \
   eslint-plugin-block-padding@latest \
-  eslint-import-webpack-resolver@latest \
+  eslint-import-resolver-webpack@latest \
+  eslint-plugin-block-padding@latest \
   babel-eslint@latest  # 2> /dev/null
 
 exit 0

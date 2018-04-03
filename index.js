@@ -1,9 +1,20 @@
+const { parserOptions,
+        settings,
+        parser } = require('./settings')
 const { reduce } = require('./utils')
 const constants  = require('./constants')
 
 // Shortcuts
-const N = 0, W = 'warn', E = 'error', before = true, after = true, always = 'always', never = 'never',  any = 'any', dir = 'directive'
-const vars = [ 'const', 'let', 'var' ]
+const N       = 0,
+      W       = 'warn',
+      E       = 'error',
+      vars    = [ 'const', 'let', 'var' ],
+      any     = 'any',
+      never   = 'never',
+      always  = 'always',
+      dir     = 'directive',
+      after   = true,
+      before  = true
 
 // Constants
 const env             = reduce(constants.env)
@@ -14,33 +25,21 @@ const indentation     = constants.indentation
 const exceptMethods   = constants.exceptMethods
 const allowedImports  = constants.allowedImports
 
-const parserOptions = {
-  ecmaVersion:  7,
-  sourceType:   'module',
-  ecmaFeatures: { jsx: true }}
-
-const settings = {
-  react: {
-    pragma:  'React',
-    version: '16.3.0' },
-  flow: {
-    onlyFilesWithFlowAnnotation: false }
-}
 
 const statements = [
-  [ always,   '*',            vars ],
-  [ always,   'import',       '*' ],
-  [ always,   vars,           '*' ],
+  // [ always,   '*',            vars ],
+  [ any,      vars,           '*' ],
   [ any,      vars,           vars ],
+  [ always,   'import',       '*' ],
   [ any,      'import',       'import' ],
-  [ always,   'empty',        'block-like' ],
-  [ always,   'block-like',   vars ],
-  [ always,   '*',            'block-like' ],
+  // [ always,   'empty',        'block-like' ],
+  // [ always,   'block-like',   vars ],
+  // [ always,   '*',            'block-like' ],
 ]
 
 module.exports = {
   env,
-  parser: 'babel-eslint',
+  parser,
   globals,
   plugins,
   settings,
@@ -55,9 +54,9 @@ module.exports = {
     semi:             [ W, never ],
     complexity:       [ W, 6 ],
     'max-depth':      [ W, 3 ],
-    'max-lines':      [ W, 400 ],
+    'max-lines':      [ W, 480 ],
     'max-len':        [ W, 140 ],
-    'max-statements': [ W, 10 ],
+    'max-statements': [ W, 12 ],
 
     'no-tabs':          W,
     'no-console':       W,
@@ -70,8 +69,8 @@ module.exports = {
     'object-curly-spacing':   [ W, always, { objectsInObjects: false, arraysInObjects: false }],
 
     // Errors
-    eqeqeq:      [ E, 'smart' ],
-    'use-isnan':   E,
+    'eqeqeq':             [ E, 'smart' ],
+    'use-isnan':            E,
 
     'no-undef':             E,
     'no-obj-calls':         E,
@@ -110,22 +109,23 @@ module.exports = {
     'func-call-spacing': [ W, 'never' ],
 
     // Padding
-    'implicit-arrow-linebreak':          N,
-    'function-paren-newline':            N,
-    'brace-style':                     [ W, '1tbs' ],
-    'padded-blocks':                   [ W, { classes:  'always', switches: 'always' }],
-    'arrow-body-style':                [ W, 'as-needed' ],
-    'newline-per-chained-call':        [ W, { ignoreChainWithDepth: 2 }],
-    'lines-between-class-members':     [ W, 'always', { exceptAfterSingleLine: true }],
-    'one-var-declaration-per-line':    [ W, 'always' ],
-    'padding-line-between-statements': [ W, ...statements.map(([ blankLine, prev, next ]) => ({ blankLine, prev, next })) ],
+    'implicit-arrow-linebreak':           N,
+    'function-paren-newline':             N,
+    'brace-style':                      [ W, '1tbs' ],
+    'arrow-body-style':                 [ W, 'as-needed' ],
+    'newline-per-chained-call':         [ W, { ignoreChainWithDepth: 2 }],
+    'lines-between-class-members':      [ W, 'always', { exceptAfterSingleLine: true }],
+    'one-var-declaration-per-line':     [ W, 'always' ],
+    'padding-line-between-statements':  [ W, ...statements.map(([ blankLine, prev, next ]) => ({ blankLine, prev, next })) ],
 
     // Comments
-    'multiline-comment-style': [ W, 'separate-lines' ],
-    'line-comment-position':   [ W, { position: 'above', applyDefaultIgnorePatterns: true }],
-    'lines-around-comment':    [ W, comments ],
+    'multiline-comment-style':          [ W, 'separate-lines' ],
+    'line-comment-position':            [ W, { position: 'above', applyDefaultIgnorePatterns: true }],
+    'lines-around-comment':             [ W, comments ],
 
-    "block-padding/class-definitions": [ 1, 2, { strategy: 'exact' }],
+    // Padding between entities
+    "block-padding/functions":          [ 1, 1, { strategy: 'at-least' }],
+    "block-padding/classes":            [ 1, 2],
 
   },
 
