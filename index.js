@@ -92,7 +92,9 @@ module.exports = {
     'react/jsx-uses-react':       E,
     'react/react-in-jsx-scope':   E,
 
-    // 'flowtype/define-flow-type':  E,
+    // Flow
+    "flowtype/define-flow-type": E,
+    "flowtype/use-flow-type":    E,
 
 
     'indent': [ 'warn', indentation.depth, indentation.options ],
@@ -111,7 +113,7 @@ module.exports = {
     // Padding
     'implicit-arrow-linebreak':           N,
     'function-paren-newline':             N,
-    'brace-style':                      [ W, '1tbs' ],
+    'brace-style':                        N,
     'arrow-body-style':                 [ W, 'as-needed' ],
     'newline-per-chained-call':         [ W, { ignoreChainWithDepth: 2 }],
     'lines-between-class-members':      [ W, 'always', { exceptAfterSingleLine: true }],
@@ -125,7 +127,7 @@ module.exports = {
 
     // Padding between entities
     "block-padding/functions":          [ 1, 1, { strategy: 'at-least' }],
-    "block-padding/classes":            [ 1, 2],
+    "block-padding/classes":            [ 1, 2 ],
 
   },
 

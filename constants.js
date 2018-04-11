@@ -13,7 +13,7 @@ module.exports.exceptMethods = [
 module.exports.plugins = [
   'react',
   'import',
-  'flow',
+  'flowtype',
   'flowtype-errors',
   'block-padding',
 ]

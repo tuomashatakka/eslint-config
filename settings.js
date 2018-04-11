@@ -18,9 +18,13 @@ module.exports = {
       version: '16.3.0'
     },
 
-    flow: {
+    flowtype: {
       onlyFilesWithFlowAnnotation: false
     },
+
+    'import/ignore': [
+      /\.(sc|le|c)ss$/
+    ],
 
   }
 
