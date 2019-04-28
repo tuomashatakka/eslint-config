@@ -92,11 +92,6 @@ module.exports = {
     'react/jsx-uses-react':       E,
     'react/react-in-jsx-scope':   E,
 
-    // Flow
-    "flowtype/define-flow-type": E,
-    "flowtype/use-flow-type":    E,
-
-
     'indent': [ 'warn', indentation.depth, indentation.options ],
 
     'space-before-function-paren': [ 1, {
