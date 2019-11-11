@@ -4,7 +4,6 @@
   "description": "Default eslint configuration",
   "main": "index.js",
   "scripts": {
-    "postinstall": "echo 'Please run ./node_modules/@tuomashatakka/eslint-config/dependencies.sh to install the dependencies.'",
     "test": "exit 0"
   },
   "repository": {
