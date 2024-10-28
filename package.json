@@ -1,10 +1,11 @@
 {
   "name": "@tuomashatakka/eslint-config",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "Default eslint configuration",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.mjs",
   "scripts": {
-    "test": "exit 0"
+    "lint": "eslint . -c eslint.config.mjs"
   },
   "repository": {
     "type": "git",
@@ -17,12 +18,26 @@
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
-    "eslint": ">=4.0.0 || >= 5.0.0",
-    "babel-eslint": ">=8.0.0 || >= 9.0.0",
-    "eslint-plugin-flow": "latest",
-    "eslint-plugin-react": "latest",
-    "eslint-plugin-import": "latest",
-    "eslint-import-resolver-webpack": "latest",
-    "eslint-plugin-block-padding": "latest"
+    "react": "*"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.13.0",
+    "@next/eslint-plugin-next": "^15.0.1",
+    "@stylistic/eslint-plugin": "^2.9.0",
+    "@stylistic/eslint-plugin-ts": "^2.9.0",
+    "@types/eslint__eslintrc": "^2.1.2",
+    "@types/eslint__js": "^8.42.3",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
+    "@typescript-eslint/parser": "^8.11.0",
+    "eslint": "^9.13.0",
+    "eslint-config-next": "^15.0.1",
+    "eslint-plugin-block-padding": "^0.0.3",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.11.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.11.0"
   }
 }
