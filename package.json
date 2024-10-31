@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
-    "react": "*"
+    "react": "*",
+    "@stylistic/eslint-plugin": "*",
+    "typescript-eslint": "*"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.1",
