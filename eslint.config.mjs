@@ -1,7 +1,6 @@
 import eslint from '@eslint/js'
 import stylistic from '@stylistic/eslint-plugin';
 import tsplugin from '@typescript-eslint/eslint-plugin';
-import eslintPluginBlockPadding from 'eslint-plugin-block-padding';
 import importPlugin from 'eslint-plugin-import';
 import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint'
@@ -19,13 +18,13 @@ export default tseslint.config(
     ...eslint.configs.recommended,
     ignores,
   },
-  { plugins: {
+  {
+    plugins: {
       '@stylistic': stylistic,
       'react': react,
       'import': importPlugin,
-      '@typescript-eslint': tsplugin,
-      'block-padding': eslintPluginBlockPadding,
-  },
+      '@typescript-eslint': tsplugin
+    },
   },
   ...tseslint.configs.recommended.map((config) => ({
     ...config,

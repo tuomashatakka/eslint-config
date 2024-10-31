@@ -1,6 +1,6 @@
 export const rules       = {
 
-  'block-padding/after-block':                     [ 'warn', 2 ],
+  // 'block-padding/after-block':                     [ 'warn', 2 ],
 
   // @stylistic
   '@stylistic/jsx-quotes':                   [ 'warn', 'prefer-single' ],
