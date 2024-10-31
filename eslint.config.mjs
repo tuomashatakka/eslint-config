@@ -1,19 +1,22 @@
+/* eslint-disable multiline-comment-style */
 import eslint from '@eslint/js'
-import stylistic from '@stylistic/eslint-plugin';
-import tsplugin from '@typescript-eslint/eslint-plugin';
-import importPlugin from 'eslint-plugin-import';
-import react from 'eslint-plugin-react';
+import stylistic from '@stylistic/eslint-plugin'
+import tsplugin from '@typescript-eslint/eslint-plugin'
+import importPlugin from 'eslint-plugin-import'
+import react from 'eslint-plugin-react'
 import tseslint from 'typescript-eslint'
 
-import { rules } from './rules.js'
-
+import rules from './rules.mjs'
 
 
 const ignores = [
   '**/*.js',
-];
+]
 
-export default tseslint.config(
+/**
+ * @type {import('typescript-eslint').Config}
+ * */
+const config = tseslint.config(
   {
     ...eslint.configs.recommended,
     ignores,
@@ -41,4 +44,6 @@ export default tseslint.config(
       ...rules
     },
   })),
-);
+)
+
+export default config

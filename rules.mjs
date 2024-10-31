@@ -1,4 +1,5 @@
-export const rules       = {
+
+const rules = {
 
   // 'block-padding/after-block':                     [ 'warn', 2 ],
 
@@ -32,6 +33,7 @@ export const rules       = {
   '@stylistic/no-mixed-operators':           [ 'warn' ],
   '@stylistic/semi-spacing':                 [ 'warn', { before: false, after: true }],
   '@stylistic/semi-style':                   [ 'warn', 'last' ],
+  '@stylistic/semi':                         [ 'warn', 'never' ],
   '@stylistic/space-before-blocks':          [ 'warn', 'always' ],
   '@stylistic/space-before-function-paren':  [ 'warn', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
   '@stylistic/template-tag-spacing':         [ 'warn', 'never' ],
@@ -79,3 +81,5 @@ export const rules       = {
       { group: 'parent', pattern: '../**' },
       { group: 'sibling', pattern: './**' }]}],
 }
+
+export default rules

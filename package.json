@@ -13,11 +13,13 @@
   },
   "author": "tuomashatakka",
   "license": "ISC",
+  "types": "**/*.d.ts",
   "bugs": {
     "url": "https://github.com/tuomashatakka/eslint-config/issues"
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
+    "@eslint/js": ">=9.13.0",
     "react": "*",
     "@stylistic/eslint-plugin": "*",
     "typescript-eslint": "*"
