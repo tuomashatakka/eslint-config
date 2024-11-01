@@ -1,5 +1,4 @@
 /* eslint-disable multiline-comment-style */
-import eslint from '@eslint/js'
 import stylistic from '@stylistic/eslint-plugin'
 import tsplugin from '@typescript-eslint/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
@@ -9,41 +8,45 @@ import tseslint from 'typescript-eslint'
 import rules from './rules.mjs'
 
 
-const ignores = [
-  '**/*.js',
-]
+const plugins = {
+  'react':              react,
+  'import':             importPlugin,
+  '@stylistic':         stylistic,
+  '@typescript-eslint': tsplugin,
+}
 
 /**
- * @type {import('typescript-eslint').Config}
- * */
+ * @type {tseslint.configs.base}
+ **/
 const config = tseslint.config(
+  ...tseslint.configs.recommended,
   {
-    ...eslint.configs.recommended,
-    ignores,
-  },
-  {
-    plugins: {
-      '@stylistic': stylistic,
-      'react': react,
-      'import': importPlugin,
-      '@typescript-eslint': tsplugin
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
-  },
-  ...tseslint.configs.recommended.map((config) => ({
-    ...config,
-
     settings: {
-      react: {
+      'import/resolver': {
+        node: {
+          extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ],
+        },
+      },
+      'react': {
         version: 'detect',
       },
     },
-    ignores,
-
-    rules: {
-      ...config.rules,
-      ...rules
-    },
-  })),
+    plugins,
+    rules,
+  }
 )
 
+/**
+ * @summary ESLint configuration
+ * @description Opinionated yet functional AF base config for ESLint
+ * @author {@author}
+ * @version {@version}
+ **/
 export default config

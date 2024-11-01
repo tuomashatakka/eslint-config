@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.mjs",
   "scripts": {
-    "lint": "eslint . -c eslint.config.mjs"
+    "lint": "eslint . --config eslint.config.mjs"
   },
   "repository": {
     "type": "git",
@@ -22,12 +22,13 @@
     "@eslint/js": ">=9.13.0",
     "react": "*",
     "@stylistic/eslint-plugin": "*",
-    "typescript-eslint": "*"
+    "typescript-eslint": ">=8.1.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.1",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.13.0",
+    "@eslint/config-array": "^1.5.3",
     "@stylistic/eslint-plugin": "^2.9.0",
     "@stylistic/eslint-plugin-ts": "^2.9.0",
     "@types/eslint__eslintrc": "^2.1.2",
