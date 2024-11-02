@@ -3,6 +3,7 @@ import stylistic from '@stylistic/eslint-plugin'
 import tsplugin from '@typescript-eslint/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
 import react from 'eslint-plugin-react'
+import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 import rules from './rules.mjs'
@@ -27,9 +28,14 @@ const config = tseslint.config(
           jsx: true,
         },
       },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      }
     },
     settings: {
-      'import/resolver': {
+      'import/internal-regex': '^@/(.+)',
+      'import/resolver':       {
         node: {
           extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ],
         },

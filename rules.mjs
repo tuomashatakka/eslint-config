@@ -26,17 +26,15 @@ export const rules = {
   'import/prefer-default-export':           [ 'error' ],
   'import/no-mutable-exports':              [ 'error' ],
   'import/order':                           [ 'warn', {
-    'groups':                  [ 'builtin', 'type', 'external', [ 'parent', 'sibling', 'index' ], 'internal', 'object' ],
+    'groups':                  [ 'builtin', 'type', 'external', [ 'parent', 'sibling', 'index' ], [ 'internal', 'object' ]],
     'alphabetize':             { order: 'asc', caseInsensitive: true },
     'distinctGroup':           true,
     'warnOnUnassignedImports': true,
     'newlines-between':        'always',
     'pathGroups':              [
-      { group: 'internal', pattern: '**/*.css', position: 'after' },
-      { group: 'object', pattern: '**/*.scss' },
-      { group: 'parent', pattern: '@/**' },
-      { group: 'parent', pattern: '../**' },
-      { group: 'sibling', pattern: './**' }]}],
+      { group: 'internal', pattern: '**/*.s?css' }
+    ]}
+  ],
 
   // Typescript
   '@typescript-eslint/ban-ts-comment':  [ 'off', 'allow-single-line' ],
@@ -122,7 +120,6 @@ export const rules = {
   '@stylistic/jsx-newline':                  [ 'warn', { prevent: true, allowMultilines: true }],
   '@stylistic/jsx-props-no-multi-spaces':    [ 'warn' ],
   '@stylistic/jsx-equals-spacing':           [ 'warn', 'never' ],
-  '@stylistic/jsx-indent-props':             [ 'warn', 2 ],
   '@stylistic/jsx-max-props-per-line':       [ 'warn', { maximum: 1, when: 'multiline' }],
   '@stylistic/jsx-self-closing-comp':        [ 'warn', { component: true, html: true }],
   '@stylistic/jsx-one-expression-per-line':  [ 'warn', { allow: 'single-child' }],
@@ -141,8 +138,6 @@ export const rules = {
   'react/jsx-closing-tag-location':          [ 'warn', 'line-aligned' ],
   'react/jsx-equals-spacing':                [ 'warn', 'never' ],
   'react/jsx-first-prop-new-line':           [ 'warn', 'multiline' ],
-  'react/jsx-indent':                        [ 'warn', 2, { checkAttributes: true, indentLogicalExpressions: true }],
-  'react/jsx-indent-props':                  [ 'warn', 2 ],
   'react/jsx-max-props-per-line':            [ 'warn', { maximum: 1, when: 'multiline' }],
   'react/jsx-no-constructed-context-values': [ 'warn' ],
   'react/jsx-no-script-url':                 [ 'warn' ],
@@ -153,6 +148,10 @@ export const rules = {
   'react/jsx-curly-brace-presence':          [ 'warn', { props: 'never', children: 'never' }],
   'react/jsx-curly-spacing':                 [ 'warn', { when: 'never', children: true }],
   'react/display-name':                      [ 'warn', { checkContextObjects: true }],
+
+  'import/prefer-default-export': 'off',
+  '@stylistic/jsx-indent-props':  [ 'warn', { indentMode: 2, ignoreTernaryOperator: true }],
+  '@stylistic/indent':            [ 'warn', 2, { offsetTernaryExpressions: false, flatTernaryExpressions: true }],
 
   // Block padding
   '@stylistic/no-multi-spaces':                  [ 'warn', { exceptions: { Property: true, TSTypeAnnotation: true, VariableDeclarator: true, ObjectExpression: false }}],
