@@ -2,6 +2,7 @@
  * @exports {import("eslint/rules").ESLintRules} rules
  * @type {import("@eslint/core").RulesConfig}
  */
+
 export const rules = {
 
   // '@next/next/no-styled-jsx-in-document':    [ 'error' ],
@@ -37,9 +38,7 @@ export const rules = {
   ],
 
   // Typescript
-  '@typescript-eslint/ban-ts-comment':  [ 'off', 'allow-single-line' ],
-  '@typescript-eslint/no-unused-vars':  [ 'warn' ],
-  '@typescript-eslint/no-explicit-any': [ 'warn' ],
+  '@stylistic/ban-ts-comment': [ 'off', 'allow-single-line' ],
 
   // Enforced practices (enforce functional and orthogonal code)
   'complexity':           [ 'warn', { max: 11 }],
@@ -182,6 +181,16 @@ export const rules = {
     { blankLine: 'any',
       prev:      [ 'multiline-expression', 'function', 'block-like', 'block' ],
       next:      [ 'multiline-expression', 'function', 'block-like', 'block' ]}],
+
+  '@stylistic/jsx-closing-bracket-location': [ 0 ],
+  '@stylistic/jsx-one-expression-per-line':  [ 'warn', { allow: 'non-jsx' }],
+  'react/jsx-one-expression-per-line':       [ 'warn', { allow: 'non-jsx' }],
+  'react/jsx-closing-bracket-location':      [ 0 ],
+  'react/jsx-curly-spacing':                 [ 0 ],
+  '@stylistic/jsx-curly-spacing':            [ 'warn', { spacing: { objectLiterals: 'always' }}],
+  '@stylistic/implicit-arrow-linebreak':     [ 0 ],
+  '@stylistic/arrow-parens':                 [ 1, 'as-needed', { requireForBlockBody: true }],
+  '@stylistic/space-before-function-paren':  [ 1, 'always' ]
 }
 
 export default rules
