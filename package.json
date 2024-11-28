@@ -1,6 +1,6 @@
 {
   "name": "@tuomashatakka/eslint-config",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Default eslint configuration",
   "type": "module",
   "main": "index.mjs",
