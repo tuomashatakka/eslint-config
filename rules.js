@@ -2,7 +2,6 @@
  * @exports {import("eslint/rules").ESLintRules} rules
  * @type {import("@eslint/core").RulesConfig}
  */
-
 export const rules = {
 
   // '@next/next/no-styled-jsx-in-document':    [ 'error' ],
@@ -193,4 +192,5 @@ export const rules = {
   '@stylistic/space-before-function-paren':  [ 1, 'always' ]
 }
 
+// Make sure we export both named and default exports
 export default rules

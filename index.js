@@ -1,4 +1,3 @@
-/* eslint-disable multiline-comment-style */
 import stylistic from '@stylistic/eslint-plugin'
 import tsplugin from '@typescript-eslint/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
@@ -6,7 +5,7 @@ import react from 'eslint-plugin-react'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-import rules from './rules.mjs'
+import { rules } from './rules.js'
 
 
 const plugins = {
@@ -18,11 +17,13 @@ const plugins = {
 
 /**
  * @type {tseslint.configs.base}
- **/
+ */
 const config = tseslint.config(
   ...tseslint.configs.recommended,
   {
     languageOptions: {
+      ecmaVersion:   'latest',
+      sourceType:    'module',
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -46,13 +47,31 @@ const config = tseslint.config(
     },
     plugins,
     rules,
+  },
+  {
+    files:           [ '**/*.{js,jsx,mjs,cjs,ts,tsx}' ],
+    languageOptions: {
+      ecmaVersion:   'latest',
+      sourceType:    'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+      },
+    }
   }
 )
 
 /**
  * @summary ESLint configuration
  * @description Opinionated yet functional AF base config for ESLint
- * @author {@author}
- * @version {@version}
- **/
+ */
 export default config
+
+export {
+  config,
+  rules
+}

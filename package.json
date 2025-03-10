@@ -3,9 +3,9 @@
   "version": "2.2.2",
   "description": "Default eslint configuration",
   "type": "module",
-  "main": "index.mjs",
+  "main": "index.js",
   "scripts": {
-    "lint": "eslint . --config eslint.config.mjs"
+    "lint": "eslint . --config index.mjs"
   },
   "repository": {
     "type": "git",
