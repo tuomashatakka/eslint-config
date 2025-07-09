@@ -34,12 +34,8 @@ export const baseConfig = {
     globals:       { ...globals.browser, ...globals.node },
   },
   settings: {
-    'react': { version: 'detect' },
+    'react':                 { version: 'detect' },
     'import/internal-regex': '^@/(.+)',
-    'import/resolver':       {
-      node: { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ]},
-      typescript: { alwaysTryTypes: true },
-    },
   },
   ignores: [ '**/node_modules/**' ],
   plugins,
