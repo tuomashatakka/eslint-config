@@ -144,7 +144,6 @@ export const rules = {
   'react/jsx-no-undef':                      [ 'warn' ],
   'react/jsx-pascal-case':                   [ 'warn' ],
   'react/jsx-curly-brace-presence':          [ 'warn', { props: 'never', children: 'never' }],
-  'react/jsx-curly-spacing':                 [ 'warn', { when: 'never', children: true }],
   'react/display-name':                      [ 'warn', { checkContextObjects: true }],
 
   'import/prefer-default-export': 'off',
@@ -185,8 +184,6 @@ export const rules = {
   '@stylistic/jsx-one-expression-per-line':  [ 'warn', { allow: 'non-jsx' }],
   'react/jsx-one-expression-per-line':       [ 'warn', { allow: 'non-jsx' }],
   'react/jsx-closing-bracket-location':      [ 0 ],
-  'react/jsx-curly-spacing':                 [ 0 ],
-  '@stylistic/jsx-curly-spacing':            [ 'warn', { spacing: { objectLiterals: 'always' }}],
   '@stylistic/implicit-arrow-linebreak':     [ 0 ],
   '@stylistic/arrow-parens':                 [ 1, 'as-needed', { requireForBlockBody: true }],
   '@stylistic/space-before-function-paren':  [ 1, 'always' ],
