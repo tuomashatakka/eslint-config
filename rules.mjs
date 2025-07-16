@@ -263,6 +263,61 @@ export const rules = {
 
   'omit/omit-unnecessary-parens-brackets': [ 'warn' ],
 
+  // whitespaced recommended rules
+  'whitespaced/block-padding': [ 'error', {
+    rootBlockPadding:          2,
+    nestedBlockPadding:        1,
+    enforceBeginningPadding:   false,
+    enforceEndPadding:         true,
+    docstringPadding:          1,
+    treatCommentsAsDocstrings: true
+  }],
+  'whitespaced/class-property-grouping': [ 'error', {
+    paddingBetweenGroups:       1,
+    enforceAlphabeticalSorting: false,
+    groups:                     [
+      { name: 'static-properties', types: [ 'ClassProperty' ], matches: [ 'static' ], order: 0 },
+      { name: 'static-methods', types: [ 'MethodDefinition' ], matches: [ 'static' ], order: 1 },
+      { name: 'instance-properties', types: [ 'ClassProperty' ], matches: [], order: 2 },
+      { name: 'constructor', types: [ 'MethodDefinition' ], matches: [ 'constructor' ], order: 3 },
+      { name: 'instance-methods', types: [ 'MethodDefinition' ], matches: [], order: 4 }
+    ]
+  }],
+  'whitespaced/aligned-assignments': [ 'error', {
+    alignComments:                 false,
+    alignLiterals:                 false,
+    blockSize:                     2,
+    ignoreAdjacent:                true,
+    ignoreIfAssignmentsNotInBlock: true,
+    alignTypes:                    true,
+    ignoreTypesMismatch:           true
+  }],
+  'whitespaced/consistent-line-spacing': [ 'error', {
+    beforeImports:      1,
+    afterImports:       1,
+    beforeExports:      1,
+    afterExports:       1,
+    beforeClass:        2,
+    afterClass:         2,
+    beforeFunction:     2,
+    afterFunction:      2,
+    beforeComment:      1,
+    ignoreTopLevelCode: false,
+    skipImportGroups:   true
+  }],
+  'whitespaced/multiline-format': [ 'error', {
+    allowSingleLine:        true,
+    multilineStyle:         'consistent',
+    minItems:               3,
+    maxLineLength:          80,
+    bracketStyle:           'same-line',
+    indentation:            2,
+    trailingComma:          'always',
+    emptyLineBetweenGroups: false,
+    consistentSpacing:      true,
+    objectAlignment:        'none'
+  }],
+
   // Stylistic formatting opinionations
   // '@stylistic/function-paren-newline':           [ 'warn', 'always' ],
   '@stylistic/function-call-spacing':     [ 'warn', 'never' ],
