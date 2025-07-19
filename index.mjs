@@ -5,7 +5,6 @@ import noInlineMultilineTypesPlugin from 'eslint-plugin-no-inline-multiline-type
 import whitespacedPlugin from 'eslint-plugin-whitespaced'
 import omitPlugin from 'eslint-plugin-omit-unnecessary'
 import react from 'eslint-plugin-react'
-import tailwindCssPlugin from 'eslint-plugin-tailwindcss'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -17,7 +16,6 @@ const plugins = {
   'import':             importPlugin,
   '@stylistic':         stylistic,
   '@typescript-eslint': tsplugin,
-  'tailwindcss':        tailwindCssPlugin,
   'omit':               omitPlugin,
   'no-inline-types':    noInlineMultilineTypesPlugin,
   'whitespaced':        whitespacedPlugin,

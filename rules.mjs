@@ -92,7 +92,7 @@ export const rules = {
   '@stylistic/quote-props':                   [ 'warn', 'consistent-as-needed', { keywords: false, unnecessary: true, numbers: false }],
   '@stylistic/indent':                        [ 'warn', 2, { SwitchCase: 1, CallExpression: { arguments: 'first' }}],
   '@stylistic/arrow-spacing':                 [ 'warn' ],
-  '@stylistic/func-call-spacing':             [ 'warn', 'never' ],
+  '@stylistic/function-call-spacing':         [ 'warn', 'never' ],
   '@stylistic/newline-per-chained-call':      [ 'warn', { ignoreChainWithDepth: 2 }],
   '@stylistic/lines-between-class-members':   [ 'warn', 'always', { exceptAfterSingleLine: true }],
   '@stylistic/one-var-declaration-per-line':  [ 'warn', 'always' ],
@@ -111,7 +111,7 @@ export const rules = {
   '@stylistic/space-before-function-paren': [ 'warn', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
   '@stylistic/template-tag-spacing':        [ 'warn', 'always' ],
   '@stylistic/yield-star-spacing':          [ 'warn', 'after' ],
-  '@stylistic/quotes':                      [ 'warn', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
+  '@stylistic/quotes':                      [ 'warn', 'single', { avoidEscape: true, allowTemplateLiterals: 'always' }],
 
   // JSX/React
   '@stylistic/jsx-quotes':                   [ 'warn', 'prefer-single' ],
@@ -188,8 +188,6 @@ export const rules = {
   '@stylistic/arrow-parens':                 [ 1, 'as-needed', { requireForBlockBody: true }],
   '@stylistic/space-before-function-paren':  [ 1, 'always' ],
 
-  'tailwindcss/no-custom-classname': 'off',
-  'tailwindcss/classnames-order':    'off',
 
   'no-inline-types/no-inline-multiline-types': 'warn',
 
@@ -360,7 +358,7 @@ export const rules = {
   '@stylistic/quotes':               [
     'warn',
     'single',
-    { avoidEscape: true, allowTemplateLiterals: true },
+    { avoidEscape: true, allowTemplateLiterals: 'always' },
   ],
 
   // JSX/React
