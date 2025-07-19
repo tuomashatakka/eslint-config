@@ -40,28 +40,8 @@ export const rules = {
   'no-class-assign':                           [ 'error' ],
   'no-array-constructor':                      [ 'error' ],
   'omit/omit-unnecessary-parens-brackets':     [ 'warn' ],
-  'no-inline-types/no-inline-multiline-types': 'warn',
-  'whitespaced/class-property-grouping':       [ 'warn', {
-    paddingBetweenGroups:       1,
-    enforceAlphabeticalSorting: false,
-    groups:                     [
-      { name: 'static-properties', types: [ 'ClassProperty' ], matches: [ 'static' ], order: 0 },
-      { name: 'static-methods', types: [ 'MethodDefinition' ], matches: [ 'static' ], order: 1 },
-      { name: 'instance-properties', types: [ 'ClassProperty' ], matches: [], order: 2 },
-      { name: 'constructor', types: [ 'MethodDefinition' ], matches: [ 'constructor' ], order: 3 },
-      { name: 'instance-methods', types: [ 'MethodDefinition' ], matches: [], order: 4 }
-    ]
-  }],
-  'whitespaced/aligned-assignments': [ 'warn', {
-    alignComments:                 false,
-    alignLiterals:                 false,
-    blockSize:                     2,
-    ignoreAdjacent:                true,
-    ignoreIfAssignmentsNotInBlock: true,
-    alignTypes:                    true,
-    ignoreTypesMismatch:           true
-  }],
-  'whitespaced/consistent-line-spacing': [ 'warn', {
+  'no-inline-types/no-inline-multiline-types': [ 'warn' ],
+  'whitespaced/consistent-line-spacing':       [ 'off', {
     beforeClass:        2,
     afterClass:         2,
     beforeImports:      0,
