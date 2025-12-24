@@ -1,6 +1,6 @@
 {
   "name": "@tuomashatakka/eslint-config",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "Default eslint configuration",
   "type": "module",
   "main": "index.mjs",
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
     "eslint": ">=9.13.0",
-    "react": "^18.3.1",
+    "react": "*",
     "typescript": "*"
   },
   "dependencies": {
