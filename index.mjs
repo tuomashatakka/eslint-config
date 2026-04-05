@@ -1,6 +1,4 @@
 import stylistic from '@stylistic/eslint-plugin'
-import stylisticJsx from '@stylistic/eslint-plugin-jsx'
-import tsplugin from '@typescript-eslint/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
 import noInlineMultilineTypesPlugin from 'eslint-plugin-no-inline-multiline-types'
 import whitespacedPlugin from 'eslint-plugin-whitespaced'
@@ -9,6 +7,7 @@ import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
+import reactStrictPlugin from './plugins/react-strict/index.mjs'
 import { rules } from './rules.mjs'
 
 
@@ -17,10 +16,11 @@ const plugins = {
   'react-hooks':        reactHooks,
   'import':             importPlugin,
   '@stylistic':         stylistic,
-  '@typescript-eslint': tsplugin,
+  '@typescript-eslint': tseslint.plugin,
   'omit':               omitPlugin,
   'no-inline-types':    noInlineMultilineTypesPlugin,
   'whitespaced':        whitespacedPlugin,
+  'react-strict':       reactStrictPlugin,
 }
 
 export { rules }
@@ -38,17 +38,7 @@ export const baseConfig = {
     'import/internal-regex': '^@/(.+)',
   },
   ignores: [ '**/node_modules/**' ],
-  plugins: {
-    ...plugins,
-    // Merge stylistic JSX plugin into the main stylistic namespace
-    '@stylistic': {
-      ...stylistic,
-      rules: {
-        ...stylistic.rules,
-        ...stylisticJsx.rules,
-      }
-    }
-  },
+  plugins,
   rules,
 }
 

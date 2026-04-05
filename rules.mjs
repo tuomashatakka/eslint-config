@@ -4,7 +4,7 @@
  */
 
 export const rules = {
-  'multiline-comment-style':         [ 'warn', 'separate-lines', { checkJSDoc: false }],
+  '@stylistic/multiline-comment-style':        [ 'warn', 'separate-lines', { checkJSDoc: false }],
   '@stylistic/lines-around-comment': [ 'warn', {
     beforeBlockComment: true,
     beforeLineComment:  false,
@@ -35,21 +35,40 @@ export const rules = {
   'no-undef':                                  [ 0 ],
   'use-isnan':                                 [ 'error' ],
   'no-obj-calls':                              [ 'error' ],
-  'no-new-symbol':                             [ 'error' ],
+  'no-new-native-nonconstructor':              [ 'error' ],
   'no-func-assign':                            [ 'error' ],
   'no-class-assign':                           [ 'error' ],
   'no-array-constructor':                      [ 'error' ],
   'omit/omit-unnecessary-parens-brackets':     [ 'warn' ],
   'no-inline-types/no-inline-multiline-types': [ 'warn' ],
-  'whitespaced/consistent-line-spacing':       [ 'off', {
+  // Whitespaced plugin — structural spacing
+  'whitespaced/block-padding':                 [ 'off' ],
+  'whitespaced/aligned-assignments':           [ 'off' ],
+  'whitespaced/consistent-line-spacing':       [ 'warn', {
     beforeClass:        2,
     afterClass:         2,
     beforeImports:      0,
     afterImports:       2,
+    beforeExports:      2,
+    afterExports:       1,
     beforeFunction:     2,
     afterFunction:      2,
+    beforeComment:      1,
     ignoreTopLevelCode: false,
-    skipImportGroups:   true
+    skipImportGroups:   true,
+  }],
+  'whitespaced/class-property-grouping':       [ 'warn', {
+    paddingBetweenGroups:       1,
+    enforceAlphabeticalSorting: false,
+  }],
+  'whitespaced/multiline-format':              [ 'warn', {
+    allowSingleLine:    true,
+    multilineStyle:     'consistent',
+    minItems:           3,
+    indentation:        2,
+    trailingComma:      'always',
+    consistentSpacing:  true,
+    objectAlignment:    'none',
   }],
   '@stylistic/function-call-spacing':         [ 'warn', 'never' ],
   '@stylistic/computed-property-spacing':     [ 'warn', 'never' ],
@@ -97,9 +116,8 @@ export const rules = {
   '@stylistic/template-tag-spacing':          [ 'warn', 'always' ],
   '@stylistic/yield-star-spacing':            [ 'warn', 'after' ],
   '@stylistic/quotes':                        [ 'warn', 'single', { avoidEscape: true, allowTemplateLiterals: 'always' }],
-  // JSX/React - Migrated to @stylistic plugin namespace (consistent)
+  // JSX/React — @stylistic plugin namespace
   '@stylistic/jsx-newline':                   [ 'warn', { prevent: true, allowMultilines: true }],
-  '@stylistic/jsx-props-no-multi-spaces':     [ 'warn' ],
   '@stylistic/jsx-equals-spacing':            [ 'warn', 'never' ],
   '@stylistic/jsx-max-props-per-line':        [ 'warn', { maximum: 1, when: 'multiline' }],
   '@stylistic/jsx-self-closing-comp':         [ 'warn', { component: true, html: true }],
@@ -111,6 +129,7 @@ export const rules = {
   '@stylistic/jsx-function-call-newline':     [ 'warn', 'always' ],
   '@stylistic/jsx-indent-props':              [ 'warn', { indentMode: 2, ignoreTernaryOperator: true }],
   '@stylistic/jsx-curly-spacing':             [ 'warn', { when: 'always', spacing: { objectLiterals: 'never' }}],
+  // React rules
   'react/no-unescaped-entities':              [ 'error', { forbid: [ '>', '}' ]}],
   'react/jsx-uses-vars':                      [ 'error' ],
   'react/jsx-uses-react':                     [ 'error' ],
@@ -128,7 +147,18 @@ export const rules = {
   'react/jsx-pascal-case':                    [ 'warn' ],
   'react/jsx-curly-brace-presence':           [ 'warn', { props: 'never', children: 'never' }],
   'react/display-name':                       [ 'warn', { checkContextObjects: true }],
+  'react/no-unstable-nested-components':      [ 'warn', { allowAsProps: true }],
+  'react/function-component-definition':      [ 'warn', { namedComponents: 'arrow-function', unnamedComponents: 'arrow-function' }],
+  'react/jsx-no-leaked-render':               [ 'warn', { validStrategies: [ 'ternary', 'coerce' ]}],
+  'react/jsx-sort-props':                     [ 'warn', {
+    callbacksLast:        true,
+    shorthandFirst:       true,
+    reservedFirst:        true,
+    multiline:            'last',
+    noSortAlphabetically: true,
+  }],
   'react-hooks/exhaustive-deps':              0,
+  // Formatting
   '@stylistic/no-multi-spaces':               [ 'warn', {
     exceptions: {
       Property:           true,
@@ -157,6 +187,13 @@ export const rules = {
     { blankLine: 'always', prev: [ 'block-like', 'block' ], next: [ 'multiline-expression', 'function', 'block-like', 'block' ]},
     { blankLine: 'any', prev: [ 'multiline-expression', 'function', 'block-like', 'block' ], next: [ 'multiline-expression', 'function', 'block-like', 'block' ]},
   ],
+  // React strict — opinionated component quality rules
+  'react-strict/no-style-prop':             [ 'warn' ],
+  'react-strict/no-nested-divs':            [ 'warn' ],
+  'react-strict/no-complex-jsx-map':        [ 'warn' ],
+  'react-strict/prefer-no-use-effect':      [ 'warn' ],
+  'react-strict/no-jsx-value-calculations': [ 'warn' ],
+  'react-strict/jsx-prop-layout':           [ 'warn' ],
 }
 
 export default rules
