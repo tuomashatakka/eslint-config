@@ -217,8 +217,8 @@ export default {
           // Handle object property alignment
           if (isObj && element.type === 'Property' && element.key) {
             if (objectAlignment === 'colon') {
-              const keyText                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        = sourceText.slice(element.key.range[0], element.key.range[1])
-              const colonIndex                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         = elementText.indexOf(':')
+              const keyText    = sourceText.slice(element.key.range[0], element.key.range[1])
+              const colonIndex = elementText.indexOf(':')
               if (colonIndex !== -1) {
                 const padding = ' '.repeat(colonPos - keyText.length)
                 elementText = keyText + padding + elementText.slice(colonIndex)
@@ -244,6 +244,7 @@ export default {
     }
 
 
+    // eslint-disable-next-line complexity
     function processObjectExpression (node) {
       if (!node.properties || node.properties.length === 0)
         return
@@ -303,8 +304,8 @@ export default {
         }
 
         // Check if all items are on separate lines or all on same line
-        const allSeparate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             = allElementsOnSeparateLines(node, node.properties)
-        const allSame                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   = allElementsOnSameLine(node, node.properties)
+        const allSeparate = allElementsOnSeparateLines(node, node.properties)
+        const allSame     = allElementsOnSameLine(node, node.properties)
 
         if (!allSeparate && multilineStyle === 'always') {
           context.report({
@@ -324,8 +325,8 @@ export default {
         }
 
         // Check trailing comma
-        const lastProp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         = node.properties[node.properties.length - 1]
-        const tokenAfterLastProp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             = sourceCode.getTokenAfter(lastProp)
+        const lastProp           = node.properties[node.properties.length - 1]
+        const tokenAfterLastProp = sourceCode.getTokenAfter(lastProp)
 
         if (trailingComma === 'always' && tokenAfterLastProp && tokenAfterLastProp.value !== ',') {
           context.report({
@@ -403,6 +404,7 @@ export default {
     }
 
 
+    // eslint-disable-next-line complexity
     function processArrayExpression (node) {
       if (!node.elements || node.elements.length === 0)
         return
@@ -438,14 +440,14 @@ export default {
         const expectedIndent = getExpectedIndentation(node)
 
         // Check item indentation
-        const nonNullElements                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    = node.elements.filter(el => el !== null)
-        const itemsWithWrongIndent                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             = nonNullElements.filter(elem => {
+        const nonNullElements      = node.elements.filter(el => el !== null)
+        const itemsWithWrongIndent = nonNullElements.filter(elem => {
           if (!elem)
             return false
 
           const elemToken = sourceCode.getFirstToken(elem)
           return elemToken.loc.start.line !== sourceCode.getFirstToken(node).loc.start.line &&
-                 elemToken.loc.start.column !== expectedIndent
+            elemToken.loc.start.column !== expectedIndent
         })
 
         if (itemsWithWrongIndent.length > 0) {
@@ -466,8 +468,8 @@ export default {
         }
 
         // Check if all items are on separate lines or all on same line
-        const allSeparate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             = allElementsOnSeparateLines(node, nonNullElements)
-        const allSame                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   = allElementsOnSameLine(node, nonNullElements)
+        const allSeparate = allElementsOnSeparateLines(node, nonNullElements)
+        const allSame     = allElementsOnSameLine(node, nonNullElements)
 
         if (!allSeparate && multilineStyle === 'always') {
           context.report({
@@ -488,8 +490,8 @@ export default {
 
         // Check trailing comma
         if (nonNullElements.length > 0) {
-          const lastElem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           = nonNullElements[nonNullElements.length - 1]
-          const tokenAfterLastElem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 = sourceCode.getTokenAfter(lastElem)
+          const lastElem           = nonNullElements[nonNullElements.length - 1]
+          const tokenAfterLastElem = sourceCode.getTokenAfter(lastElem)
 
           if (trailingComma === 'always' && tokenAfterLastElem && tokenAfterLastElem.value !== ',') {
             context.report({

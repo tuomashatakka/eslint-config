@@ -6,7 +6,6 @@ type ResultsType = { passed: number; failed: number; errors: string[] }
 
 class TestRunner {
   fixturesDir: string
-
   configPath: string
 
   results: ResultsType

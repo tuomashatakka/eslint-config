@@ -8,27 +8,27 @@ export default {
     type: 'layout',
     docs: {
       description: 'Enforce vertically aligned assignments in declaration blocks',
-      category:    "Stylistic Issues",
+      category:    'Stylistic Issues',
       recommended: false,
     },
     fixable: 'whitespace',
     schema:  [{
-      type:       "object",
+      type:       'object',
       properties: {
-        alignComments:              { type: "boolean", default: false },
-        alignLiterals:              { type: "boolean", default: false },
-        blockSize:                  { type: "integer", minimum: 2, default: 2 },
-        ignoreAdjacent:                { type: "boolean", default: true },
-        ignoreIfAssignmentsNotInBlock: { type: "boolean", default: true },
-        alignTypes:                 { type: "boolean", default: false },
-        ignoreTypesMismatch:        { type: "boolean", default: true },
-        alignMemberAssignments:     { type: "boolean", default: true },
+        alignComments:                 { type: 'boolean', default: false },
+        alignLiterals:                 { type: 'boolean', default: false },
+        blockSize:                     { type: 'integer', minimum: 2, default: 2 },
+        ignoreAdjacent:                { type: 'boolean', default: true },
+        ignoreIfAssignmentsNotInBlock: { type: 'boolean', default: true },
+        alignTypes:                    { type: 'boolean', default: false },
+        ignoreTypesMismatch:           { type: 'boolean', default: true },
+        alignMemberAssignments:        { type: 'boolean', default: true },
       },
       additionalProperties: false,
-    },],
+    }],
     messages: {
-      misalignedAssignment: "Assignment operators should be vertically aligned within blocks.",
-      misalignedTypes:      "Type declarations should be vertically aligned within blocks.",
+      misalignedAssignment: 'Assignment operators should be vertically aligned within blocks.',
+      misalignedTypes:      'Type declarations should be vertically aligned within blocks.',
     },
   },
   create (context) {
@@ -45,7 +45,7 @@ export default {
     const alignMemberAssignments        = options.alignMemberAssignments !== undefined ? options.alignMemberAssignments : true
 
 
-function getEqualsColumn (declarator) {
+    function getEqualsColumn (declarator) {
       const equalsToken = sourceCode.getTokenBefore(
         declarator.init,
         token => token.value === '='
@@ -55,7 +55,7 @@ function getEqualsColumn (declarator) {
     }
 
 
-function getTypeColonColumn (declarator) {
+    function getTypeColonColumn (declarator) {
       if (declarator.id && declarator.id.typeAnnotation) {
         const colonToken = sourceCode.getFirstToken(declarator.id.typeAnnotation)
         return colonToken ? colonToken.loc.start.column : null
@@ -64,12 +64,12 @@ function getTypeColonColumn (declarator) {
     }
 
 
-function areNodesAdjacent (node1, node2) {
+    function areNodesAdjacent (node1, node2) {
       return node2.loc.start.line === node1.loc.end.line + 1
     }
 
 
-function haveSameKind (declarations) {
+    function haveSameKind (declarations) {
       if (!declarations.length)
         return true
 
@@ -78,26 +78,26 @@ function haveSameKind (declarations) {
     }
 
 
-function allHaveTypes (declarations) {
+    function allHaveTypes (declarations) {
       return declarations.every(decl =>
         decl.id && decl.id.typeAnnotation
       )
     }
 
 
-function anyHaveTypes (declarations) {
+    function anyHaveTypes (declarations) {
       return declarations.some(decl =>
         decl.id && decl.id.typeAnnotation
       )
     }
 
 
-function getMaxEqualsColumn (declarations) {
+    function getMaxEqualsColumn (declarations) {
       return Math.max(...declarations.map(getEqualsColumn))
     }
 
 
-function getMaxTypeColonColumn (declarations) {
+    function getMaxTypeColonColumn (declarations) {
       const columns = declarations
         .map(getTypeColonColumn)
         .filter(column => column !== null)
@@ -106,34 +106,37 @@ function getMaxTypeColonColumn (declarations) {
     }
 
 
-function getFixedDeclaration (declarator, targetMaxIdLength, targetMaxTypeLength) {
+function getFixedDeclaration (declarator, targetMaxEqualsColumn) {
       const originalText = sourceCode.getText(declarator)
       const idText = sourceCode.getText(declarator.id)
       const initText = declarator.init ? sourceCode.getText(declarator.init) : ''
 
-      const hasType = declarator.id && declarator.id.typeAnnotation
-      const typeText = hasType ? sourceCode.getText(declarator.id.typeAnnotation) : ''
-
       if (!initText)
         return originalText
 
-      let result = idText
+      // Get the equals token
+      const equalsToken = sourceCode.getTokenBefore(
+        declarator.init,
+        token => token.value === '='
+      )
 
-      if (hasType && targetMaxTypeLength !== null) {
-        const typeLength = typeText.length
-        const typePadding = targetMaxTypeLength - typeLength
-        result += ' '.repeat(typePadding) + typeText
-      }
+      if (!equalsToken)
+        return originalText
 
-      const idLength = idText.length + (hasType ? 1 + typeText.length : 0)
-      const equalsPadding = targetMaxIdLength - idLength
-      result += ' '.repeat(equalsPadding) + '= ' + initText
+      const currentEqualsColumn = equalsToken.loc.start.column
+      const padding = targetMaxEqualsColumn - currentEqualsColumn
+
+      if (padding <= 0)
+        return originalText
+
+      // Build the fixed text: id + padding + '= ' + init
+      const result = idText + ' '.repeat(padding) + '= ' + initText
 
       return result
     }
 
 
-function getIdLengthWithType (declarator) {
+    function getIdLengthWithType (declarator) {
       const idText = sourceCode.getText(declarator.id)
       if (declarator.id && declarator.id.typeAnnotation) {
         const typeText = sourceCode.getText(declarator.id.typeAnnotation)
@@ -143,12 +146,23 @@ function getIdLengthWithType (declarator) {
     }
 
 
-function checkAlignment (declarations) {
+    function checkAlignment (declarations) {
       if (declarations.length < blockSize)
-return;
+        return
 
       if (ignoreIfAssignmentsNotInBlock && !haveSameKind(declarations))
-return;
+        return
+
+      // Get actual equals column positions
+      const equalsColumns = declarations.map(d => getEqualsColumn(d)).filter(c => c !== null)
+
+      // Check if already aligned by comparing equals columns directly
+      if (equalsColumns.length >= 2) {
+        const maxEqualsCol = Math.max(...equalsColumns)
+        const minEqualsCol = Math.min(...equalsColumns)
+        if (maxEqualsCol === minEqualsCol)
+          return
+      }
 
       const maxIdLength = Math.max(...declarations.map(getIdLengthWithType))
 
@@ -165,56 +179,58 @@ return;
         }
       }
 
-      declarations.forEach(declarator => {
-        const currentIdLength = getIdLengthWithType(declarator)
+      const maxEqualsColumn = Math.max(...equalsColumns)
 
-        if (currentIdLength !== maxIdLength)
-context.report({
-          node: declarator,
-          messageId: "misalignedAssignment",
-          fix(fixer) {
+      declarations.forEach(declarator => {
+        const equalsCol = getEqualsColumn(declarator)
+
+        if (equalsCol !== null && equalsCol !== maxEqualsColumn)
+          context.report({
+            node:      declarator,
+            messageId: 'misalignedAssignment',
+            fix (fixer) {
               return fixer.replaceText(
                 declarator,
-                getFixedDeclaration(declarator, maxIdLength, maxTypeLength)
-              );
+                getFixedDeclaration(declarator, maxEqualsColumn)
+              )
             },
-        });
+          })
       })
     }
 
 
-function processDeclarationGroup (declarations) {
+    function processDeclarationGroup (declarations) {
       if (!declarations.length)
-        return;
+        return
 
       const declarationsWithInits = declarations.filter(decl => decl.init)
 
       if (declarationsWithInits.length < blockSize)
-return;
+        return
 
       if (ignoreAdjacent) {
         const adjacentGroups = []
         let currentGroup = [ declarationsWithInits[0] ]
 
         for (let i = 1; i < declarationsWithInits.length; i++) {
-          const prevDecl                    = declarationsWithInits[i - 1]
-          const currentDecl                                 = declarationsWithInits[i]
+          const prevDecl    = declarationsWithInits[i - 1]
+          const currentDecl = declarationsWithInits[i]
 
           if (areNodesAdjacent(prevDecl, currentDecl))
-currentGroup.push(currentDecl); else {
+            currentGroup.push(currentDecl); else {
             if (currentGroup.length >= blockSize)
-adjacentGroups.push(currentGroup)
+              adjacentGroups.push(currentGroup)
             currentGroup = [ currentDecl ]
           }
         }
 
         if (currentGroup.length >= blockSize)
-adjacentGroups.push(currentGroup)
+          adjacentGroups.push(currentGroup)
 
         adjacentGroups.forEach(checkAlignment)
       }
- else
-checkAlignment(declarationsWithInits)
+      else
+        checkAlignment(declarationsWithInits)
     }
 
 
@@ -230,28 +246,28 @@ checkAlignment(declarationsWithInits)
     }
 
 
-function getFixedMemberAssignment (exprStmt, targetMaxLeftLength) {
+    function getFixedMemberAssignment (exprStmt, targetMaxLeftLength) {
       const assignExpr = exprStmt.expression
-      const left = assignExpr.left
-      const right = assignExpr.right
-      const leftText = sourceCode.getText(left)
-      const rightText = sourceCode.getText(right)
+      const left       = assignExpr.left
+      const right      = assignExpr.right
+      const leftText   = sourceCode.getText(left)
+      const rightText  = sourceCode.getText(right)
 
       const leftLength = leftText.length
-      const padding = targetMaxLeftLength - leftLength
+      const padding    = targetMaxLeftLength - leftLength
 
       return leftText + ' '.repeat(padding) + '= ' + rightText
     }
 
 
-function getMemberLeftLength (exprStmt) {
+    function getMemberLeftLength (exprStmt) {
       const left = exprStmt.expression.left
       return sourceCode.getText(left).trimEnd().length
     }
 
 
-function getMemberEqualsColumn (exprStmt) {
-      const assignExpr = exprStmt.expression
+    function getMemberEqualsColumn (exprStmt) {
+      const assignExpr  = exprStmt.expression
       const equalsToken = sourceCode.getTokenBefore(
         assignExpr.right,
         token => token.value === '=' && token.type === 'Punctuator'
@@ -260,17 +276,17 @@ function getMemberEqualsColumn (exprStmt) {
     }
 
 
-function checkMemberAlignment (stmts) {
+    function checkMemberAlignment (stmts) {
       if (stmts.length < blockSize)
-        return;
+        return
 
-      const lengths = stmts.map(getMemberLeftLength)
+      const lengths   = stmts.map(getMemberLeftLength)
       const maxLength = Math.max(...lengths)
 
       // Check if already aligned by comparing equals columns
       const equalsColumns = stmts.map(s => getMemberEqualsColumn(s)).filter(c => c !== null)
       if (equalsColumns.length >= 2) {
-        const maxCol = Math.max(...equalsColumns)
+        const maxCol     = Math.max(...equalsColumns)
         const allAligned = equalsColumns.every(c => c === maxCol)
         if (allAligned)
           return
@@ -279,20 +295,20 @@ function checkMemberAlignment (stmts) {
       stmts.forEach(stmt => {
         const length = getMemberLeftLength(stmt)
         if (length !== maxLength)
-context.report({
-          node: stmt.expression,
-          messageId: 'misalignedAssignment',
-          fix(fixer) {
-              return fixer.replaceText(stmt.expression, getFixedMemberAssignment(stmt, maxLength));
+          context.report({
+            node:      stmt.expression,
+            messageId: 'misalignedAssignment',
+            fix (fixer) {
+              return fixer.replaceText(stmt.expression, getFixedMemberAssignment(stmt, maxLength))
             },
-        });
+          })
       })
     }
 
 
-function processMemberAssignments (blockBody) {
+    function processMemberAssignments (blockBody) {
       if (!alignMemberAssignments)
-        return;
+        return
 
       const memberStmts = blockBody.filter(stmt =>
         stmt.type === 'ExpressionStatement' &&
@@ -303,17 +319,18 @@ function processMemberAssignments (blockBody) {
       )
 
       if (memberStmts.length < blockSize)
-        return;
+        return
 
       if (ignoreAdjacent) {
         const groups = []
         let group    = [ memberStmts[0] ]
 
         for (let i = 1; i < memberStmts.length; i++)
-if (areNodesAdjacent(memberStmts[i - 1], memberStmts[i])) group.push(memberStmts[i]);
-        else {
-          if (group.length >= blockSize)
-groups.push(group)
+          if (areNodesAdjacent(memberStmts[i - 1], memberStmts[i]))
+            group.push(memberStmts[i])
+          else {
+            if (group.length >= blockSize)
+              groups.push(group)
             group = [ memberStmts[i] ]
           }
         if (group.length >= blockSize)
@@ -321,7 +338,7 @@ groups.push(group)
         groups.forEach(checkMemberAlignment)
       }
       else
-checkMemberAlignment(memberStmts)
+        checkMemberAlignment(memberStmts)
     }
 
 
@@ -332,15 +349,15 @@ checkMemberAlignment(memberStmts)
       const declarations = []
 
       for (const statement of scopeBody)
-if (statement.type === 'VariableDeclaration')
-        declarations.push(...statement.declarations)
+        if (statement.type === 'VariableDeclaration')
+          declarations.push(...statement.declarations)
 
       processDeclarationGroup(declarations)
       processMemberAssignments(scopeBody)
     }
 
 
-return {
+    return {
       Program (node) {
         processBlockVariables(node)
       },
@@ -351,14 +368,14 @@ return {
 
       SwitchCase (node) {
         if (!node.consequent)
-          return;
+          return
 
         const declarations = []
         const memberStmts  = []
 
         for (const statement of node.consequent)
-if (statement.type === 'VariableDeclaration')
-          declarations.push(...statement.declarations)
+          if (statement.type === 'VariableDeclaration')
+            declarations.push(...statement.declarations)
 
         processDeclarationGroup(declarations)
         processMemberAssignments(node.consequent)
