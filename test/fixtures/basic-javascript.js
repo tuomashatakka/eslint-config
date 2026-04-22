@@ -7,8 +7,8 @@ const testObject = {
   name:   'test',
   value:  42,
   nested: {
-    property: 'value'
-  }
+    property: 'value',
+  },
 }
 
 
@@ -27,8 +27,8 @@ const arrowFunction = (x, y) => {
 
 
 const asyncFunction = async data => {
-  const response                                                                                                                                                                                                                                                 = await fetch('/api/data')
-  const json                                                                                                                                                                                                                                             = await response.json()
+  const response = await fetch('/api/data')
+  const json     = await response.json()
 
   return json
 }
@@ -46,5 +46,6 @@ class TestClass {
 
 
 export default basicFunction
+
 
 export { TestClass, arrowFunction }

@@ -7,13 +7,13 @@ import jsxPropLayout from './rules/jsx-prop-layout.mjs'
 
 
 export const rules = {
-                       'no-style-prop':             noStyleProp,
-                       'no-nested-divs':            noNestedDivs,
-                       'no-complex-jsx-map':        noComplexJsxMap,
-                       'prefer-no-use-effect':      preferNoUseEffect,
-                       'no-jsx-value-calculations': noJsxValueCalculations,
-                       'jsx-prop-layout':           jsxPropLayout,
-                     }
+  'no-style-prop':             noStyleProp,
+  'no-nested-divs':            noNestedDivs,
+  'no-complex-jsx-map':        noComplexJsxMap,
+  'prefer-no-use-effect':      preferNoUseEffect,
+  'no-jsx-value-calculations': noJsxValueCalculations,
+  'jsx-prop-layout':           jsxPropLayout,
+}
 
 
 export default { rules }

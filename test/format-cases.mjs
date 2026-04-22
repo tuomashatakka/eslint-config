@@ -9,20 +9,15 @@ import { fileURLToPath } from 'url'
 const execAsync = promisify(exec)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-/**
- * Format testing tool for ESLint configuration
- * Tests that the configuration produces consistent formatting results
- */
-
 
 class FormatTester {
   constructor () {
     this.fixturesDir = path.join(__dirname, 'fixtures')
-    this.configPath = path.join(__dirname, '../index.mjs')
-    this.results = {
+    this.configPath  = path.join(__dirname, '../index.mjs')
+    this.results     = {
       tested:    0,
       formatted: 0,
-      errors:    []
+      errors:    [],
     }
   }
 
@@ -101,7 +96,7 @@ class FormatTester {
           })
           this.results.errors.push({
             file:   filename,
-            errors: fileResult.messages.filter(m => m.severity === 2)
+            errors: fileResult.messages.filter(m => m.severity === 2),
           })
         }
         else if (warningCount > 0)
@@ -117,7 +112,7 @@ class FormatTester {
       console.log(`  ❌ Format test failed: ${error.message}`)
       this.results.errors.push({
         file:  filename,
-        error: error.message
+        error: error.message,
       })
     }
   }
@@ -158,20 +153,23 @@ name: 'test',
 value: 42,
 description: 'A test object'
 }`,
-        rules: [ '@stylistic/key-spacing' ]
+        rules: [ '@stylistic/key-spacing' ],
       },
       {
         name:   'Array formatting',
         before: `const arr = [ 1, 2, 3, 4, 5 ]`,
-        rules:  [ '@stylistic/array-bracket-spacing' ]
+        rules:  [ '@stylistic/array-bracket-spacing' ],
       },
       {
         name:   'Function spacing',
         before: `function test( param1,param2 ){
 return param1+param2
 }`,
-        rules: [ '@stylistic/space-before-function-paren', '@stylistic/space-infix-ops' ]
-      }
+        rules: [
+          '@stylistic/space-before-function-paren',
+          '@stylistic/space-infix-ops',
+        ],
+      },
     ]
 
     examples.forEach(example => {
@@ -193,5 +191,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   else
     await tester.runFormatTests()
 }
+
 
 export default FormatTester

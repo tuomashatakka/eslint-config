@@ -1,8 +1,8 @@
 import stylistic from '@stylistic/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
-import noInlineMultilineTypesPlugin from 'eslint-plugin-no-inline-multiline-types'
-import whitespacedPlugin from 'eslint-plugin-whitespaced'
-import omitPlugin from 'eslint-plugin-omit-unnecessary'
+import noInlineMultilineTypesPlugin from './plugins/no-inline-types/index.mjs'
+import whitespacedPlugin from './plugins/whitespaced/index.mjs'
+import omitPlugin from './plugins/omit/index.mjs'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import globals from 'globals'
@@ -50,9 +50,5 @@ export const config = tseslint.config(
   ...tseslint.configs.recommended,
   baseConfig)
 
-/**
- * @summary ESLint configuration
- * @description Opinionated yet functional AF base config for ESLint
- */
 
 export default config

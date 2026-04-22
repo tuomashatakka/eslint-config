@@ -15,9 +15,9 @@ const JSXFormattingTest = ({ items, onSelect, className }) => {
 
     {/* Multi-line JSX with props */}
     <button
-      onClick={ () => handleClick('test') }
       disabled={ !items.length }
-      className="primary-button">
+      className="primary-button"
+      onClick={ () => handleClick('test') }>
       Click me
     </button>
 
@@ -31,8 +31,7 @@ const JSXFormattingTest = ({ items, onSelect, className }) => {
             onClick={ () => handleClick(item.id) }>
             <span>{item.name}</span>
 
-            {item.description &&
-                <small>{item.description}</small>
+            {item.description ? <small>{item.description}</small> : null
             }
           </li>
         )}
@@ -132,6 +131,8 @@ const DataProvider = ({ children, data }) => {
   return children(enhancedData)
 }
 
+
 export default JSXFormattingTest
+
 
 export { withLoading, DataProvider }

@@ -18,7 +18,7 @@ interface State {
 const TestComponent: React.FC<Props> = ({ title, count = 0, onUpdate }) => {
   const [ state, setState ] = useState<State>({
     isLoading: false,
-    data:      []
+    data:      [],
   })
 
 
@@ -27,13 +27,13 @@ const TestComponent: React.FC<Props> = ({ title, count = 0, onUpdate }) => {
       setState(prev => ({ ...prev, isLoading: true }))
 
       try {
-        const response                                                                                                                                                                                                                                                                                                                                                                                                                                     = await fetch('/api/data')
-        const data                                                                                                                                                                                                                                                                                                                                                                                                                           = await response.json()
+        const response                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 = await fetch('/api/data')
+        const data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       = await response.json()
 
         setState(prev => ({
           ...prev,
           isLoading: false,
-          data
+          data,
         }))
       }
       catch (error) {
@@ -69,8 +69,8 @@ const TestComponent: React.FC<Props> = ({ title, count = 0, onUpdate }) => {
 
     <div className="content">
       <button
-        onClick={ () => handleClick(count + 1) }
-        disabled={ state.isLoading }>
+        disabled={ state.isLoading }
+        onClick={ () => handleClick(count + 1) }>
         Click me ({count})
       </button>
 
@@ -80,5 +80,6 @@ const TestComponent: React.FC<Props> = ({ title, count = 0, onUpdate }) => {
     </div>
   </div>
 }
+
 
 export default TestComponent

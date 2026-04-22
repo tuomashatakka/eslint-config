@@ -1,12 +1,12 @@
-const RESERVED_PROPS                                                             = new Set([
-                                                                                 'key',
-                                                                                 'ref',
-                                                                               ])
-const STYLE_PROPS                                                          = new Set([
-                                                                                       'className',
-                                                                                       'style',
-                                                                                       'id',
-                                                                                     ])
+const RESERVED_PROPS                                                                                                                         = new Set([
+  'key',
+  'ref',
+])
+const STYLE_PROPS                                                                                                                      = new Set([
+  'className',
+  'style',
+  'id',
+])
 
 
 function getPropName (attr) {
@@ -45,26 +45,26 @@ function getPropGroup (name) {
 
 export default {
   meta: {
-                         type:    'suggestion',
-                         docs:    { description: 'Enforce consistent JSX prop ordering: key/ref first, className/style next, data/aria attrs, then regular props, callbacks last' },
-                         fixable: 'code',
-                         schema:  [],
-                         messages: {
+    type:    'suggestion',
+    docs:    { description: 'Enforce consistent JSX prop ordering: key/ref first, className/style next, data/aria attrs, then regular props, callbacks last' },
+    fixable: 'code',
+    schema:  [],
+    messages: {
       propOrder: '`{{ current }}` should be placed before `{{ previous }}` ({{ currentGroup }} props should come before {{ previousGroup }} props).',
     },
-                       },
+  },
   create (context) {
     const groupNames = [
-                         'reserved',
-                         'style/class',
-                         'data/aria',
-                         'regular',
-                         'spread',
-                         'callback',
-                       ]
+      'reserved',
+      'style/class',
+      'data/aria',
+      'regular',
+      'spread',
+      'callback',
+    ]
 
     return {
-             JSXOpeningElement (node) {
+      JSXOpeningElement (node) {
         const attrs = node.attributes
 
         if (attrs.length < 2)
@@ -95,6 +95,6 @@ export default {
           lastName = name
         }
       },
-           }
+    }
   },
 }

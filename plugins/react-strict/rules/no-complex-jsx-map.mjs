@@ -30,17 +30,17 @@ function hasComplexBody (callbackBody) {
 
 export default {
   meta: {
-                         type:    'suggestion',
-                         docs:    { description: 'Disallow complex .map() callbacks with inline logic inside JSX' },
-                         fixable: null,
-                         schema:  [],
-                         messages: {
+    type:    'suggestion',
+    docs:    { description: 'Disallow complex .map() callbacks with inline logic inside JSX' },
+    fixable: null,
+    schema:  [],
+    messages: {
       noComplexMap: 'Extract complex .map() callback into a separate component. Move conditional logic outside the JSX return block.',
     },
-                       },
+  },
   create (context) {
     return {
-             CallExpression (node) {
+      CallExpression (node) {
         if (
           node.callee.type !== 'MemberExpression' ||
           node.callee.property.type !== 'Identifier' ||
@@ -61,6 +61,6 @@ export default {
             context.report({ node, messageId: 'noComplexMap' })
         }
       },
-           }
+    }
   },
 }

@@ -1,5 +1,3 @@
-/* eslint-disable whitespaced/consistent-line-spacing */
-
 
 import React, { useState, useEffect } from 'react'
 

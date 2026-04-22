@@ -10,11 +10,8 @@ const longValue = 'world'
 
 class DataProcessor {
   static defaultConfig = { verbose: false }
-
   private name: string
-
   private data: string[]
-
   constructor (name: string) {
     this.name = name
 
@@ -35,9 +32,7 @@ class DataProcessor {
 
 function formatOutput (value: string): string {
   const prefix = '[OUT]'
-
   const result = `${prefix} ${value}`
-
   return result
 }
 

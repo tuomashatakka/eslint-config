@@ -57,17 +57,17 @@ function isInsideReturnJSX (node) {
 
 export default {
   meta: {
-                         type:    'suggestion',
-                         docs:    { description: 'Disallow value calculations and assignments inside JSX return blocks' },
-                         fixable: null,
-                         schema:  [],
-                         messages: {
+    type:    'suggestion',
+    docs:    { description: 'Disallow value calculations and assignments inside JSX return blocks' },
+    fixable: null,
+    schema:  [],
+    messages: {
       noJsxCalculations: 'Move value calculations and assignments outside the return block. Compute values before the return statement.',
     },
-                       },
+  },
   create (context) {
     return {
-             JSXExpressionContainer (node) {
+      JSXExpressionContainer (node) {
         if (!isComponentFunction(node) || !isInsideReturnJSX(node))
           return
 
@@ -88,12 +88,12 @@ export default {
             context.report({ node: expr, messageId: 'noJsxCalculations' })
         }
       },
-             VariableDeclaration (node) {
+      VariableDeclaration (node) {
         if (!isComponentFunction(node) || !isInsideReturnJSX(node))
           return
 
         context.report({ node, messageId: 'noJsxCalculations' })
       },
-           }
+    }
   },
 }

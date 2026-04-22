@@ -10,17 +10,6 @@ const execAsync = promisify(exec)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 
-/**
- * Test runner for ESLint configuration
- * Validates that the config works with various code samples
- *
- * Fixture naming conventions:
- *   *.valid.{ext}   — must produce zero errors AND zero warnings
- *   *.invalid.{ext} — must produce expected warnings (annotated with expect-warning: rule-id)
- *   *.<ext>         — must produce zero errors (warnings are tolerated)
- */
-
-
 class ESLintConfigTester {
   constructor () {
     this.fixturesDir = path.join(__dirname, 'fixtures')
@@ -31,7 +20,6 @@ class ESLintConfigTester {
       errors: [],
     }
   }
-
 
   async runTests () {
     console.log('\n  Running ESLint configuration tests...\n')
@@ -133,7 +121,10 @@ class ESLintConfigTester {
       messages.filter(m => m.severity === 2).forEach(msg =>
         console.log(`      Error: ${msg.message} (${msg.ruleId}) [line ${msg.line}]`))
       this.results.failed++
-      this.results.errors.push({ file: filename, errors: messages.filter(m => m.severity === 2) })
+      this.results.errors.push({
+        file:   filename,
+        errors: messages.filter(m => m.severity === 2),
+      })
     }
     else {
       console.log(`    PASS — 0 errors, ${warningCount} warnings`)
@@ -166,7 +157,10 @@ class ESLintConfigTester {
       messages.filter(m => m.severity === 2).forEach(msg =>
         console.log(`      Error: ${msg.message} (${msg.ruleId}) [line ${msg.line}]`))
       this.results.failed++
-      this.results.errors.push({ file: filename, errors: messages.filter(m => m.severity === 2) })
+      this.results.errors.push({
+        file:   filename,
+        errors: messages.filter(m => m.severity === 2),
+      })
       return
     }
 
@@ -175,7 +169,10 @@ class ESLintConfigTester {
     if (missing.length > 0) {
       console.log(`    FAIL — expected warnings not found: ${missing.join(', ')}`)
       this.results.failed++
-      this.results.errors.push({ file: filename, error: `Missing expected warnings: ${missing.join(', ')}` })
+      this.results.errors.push({
+        file:  filename,
+        error: `Missing expected warnings: ${missing.join(', ')}`,
+      })
     }
     else {
       console.log(`    PASS — ${warningCount} expected warnings from ${expected.length} rules`)

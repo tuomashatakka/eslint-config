@@ -1,16 +1,16 @@
 export default {
   meta: {
-                         type:    'suggestion',
-                         docs:    { description: 'Discourage useEffect in favor of React context, custom hooks, or event-driven patterns' },
-                         fixable: null,
-                         schema:  [],
-                         messages: {
+    type:    'suggestion',
+    docs:    { description: 'Discourage useEffect in favor of React context, custom hooks, or event-driven patterns' },
+    fixable: null,
+    schema:  [],
+    messages: {
       preferNoUseEffect: 'Consider alternatives to useEffect. Extract side effects into React context, a custom hook in a separate module, or use event-driven patterns.',
     },
-                       },
+  },
   create (context) {
     return {
-             CallExpression (node) {
+      CallExpression (node) {
         const isDirectCall = node.callee.type === 'Identifier' &&
           node.callee.name === 'useEffect'
 
@@ -21,6 +21,6 @@ export default {
         if (isDirectCall || isMemberCall)
           context.report({ node, messageId: 'preferNoUseEffect' })
       },
-           }
+    }
   },
 }

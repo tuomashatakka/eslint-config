@@ -14,12 +14,18 @@ const complexTemplate = `
 const regexPatterns = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   phone: /^\+?[\d\s-()]+$/,
-  url:   /^https?:\/\/.+$/
+  url:   /^https?:\/\/.+$/,
 }
 
 
 // Chained method calls
-const chainedOperations = [ 1, 2, 3, 4, 5 ]
+const chainedOperations = [
+  1,
+  2,
+  3,
+  4,
+  5,
+]
   .filter(x => x % 2 === 0)
   .map(x => x * 2)
   .reduce((acc, val) => acc + val, 0)
@@ -37,7 +43,7 @@ const dynamicKeys = {
     yield 2
     yield 3
   },
-  [Symbol.toStringTag]: 'CustomObject'
+  [Symbol.toStringTag]: 'CustomObject',
 }
 
 
@@ -47,7 +53,7 @@ const asyncErrorHandling = async () => {
     const results = await Promise.all([
       fetch('/api/users'),
       fetch('/api/posts'),
-      fetch('/api/comments')
+      fetch('/api/comments'),
     ])
 
 
@@ -78,7 +84,7 @@ const arrowFunctionPatterns = {
     const result = await processValue(x)
     return result
   },
-  destructured: ({ name, age }) => `${name} is ${age} years old`
+  destructured: ({ name, age }) => `${name} is ${age} years old`,
 }
 
 
@@ -103,8 +109,6 @@ const complexSwitch = (type, data) => {
 }
 
 
-// Export patterns
-
 export {
   complexTemplate,
   regexPatterns,
@@ -115,5 +119,6 @@ export {
   arrowFunctionPatterns,
   complexSwitch
 }
+
 
 export default complexCondition

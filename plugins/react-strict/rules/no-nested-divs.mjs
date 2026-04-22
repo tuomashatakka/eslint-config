@@ -24,17 +24,17 @@ function getElementName (node) {
 
 export default {
   meta: {
-                         type:    'suggestion',
-                         docs:    { description: 'Disallow nested div elements; prefer semantic HTML5 tags' },
-                         fixable: null,
-                         schema:  [],
-                         messages: {
+    type:    'suggestion',
+    docs:    { description: 'Disallow nested div elements; prefer semantic HTML5 tags' },
+    fixable: null,
+    schema:  [],
+    messages: {
       noNestedDivs: 'Avoid nesting <div> inside <div>. Use semantic HTML5 elements instead ({{ alternatives }}).',
     },
-                       },
+  },
   create (context) {
     return {
-             JSXElement (node) {
+      JSXElement (node) {
         const name = getElementName(node)
 
         if (name !== 'div')
@@ -47,13 +47,13 @@ export default {
 
         const parentName = getElementName(parent)
 
-        if (parentName === 'div') 
-context.report({
-                                                   node:      node.openingElement,
-                                                   messageId: 'noNestedDivs',
-                                                   data:      { alternatives: SEMANTIC_ALTERNATIVES.join(', ') },
-                                                 })
+        if (parentName === 'div')
+          context.report({
+            node:      node.openingElement,
+            messageId: 'noNestedDivs',
+            data:      { alternatives: SEMANTIC_ALTERNATIVES.join(', ') },
+          })
       },
-           }
+    }
   },
 }
