@@ -2,7 +2,7 @@
  * @fileoverview Rule to omit unnecessary parentheses, brackets, and braces
  */
 
-import { isValidDotNotationIdentifier, isDeclaration, isParenthesized } from '../utils.mjs'
+import { isValidDotNotationIdentifier, isDeclaration, isParenthesized, statementCanAbsorbElse } from '../utils.mjs'
 
 
 export default {
@@ -160,13 +160,39 @@ function checkUnnecessaryBraces (blockStatement, controllingNode) {
       if (singleStatement.type === 'BlockStatement')
         return
 
+      // Dangling-else hazard: stripping the braces around an if/else if's
+      // consequent could let a trailing `else` rebind to a dangling inner
+      // `if`. Skip the fix entirely in that case.
+      const isConsequentOfIfWithElse =
+        controllingNode &&
+        controllingNode.type === 'IfStatement' &&
+        controllingNode.consequent === blockStatement &&
+        Boolean(controllingNode.alternate)
+
+      if (isConsequentOfIfWithElse && statementCanAbsorbElse(singleStatement))
+        return
+
+      // ASI hazard: when the next syntactic token after `}` is a keyword
+      // (`else` / `while` of a do-while), stripping the braces leaves the
+      // inner statement directly followed by that keyword on the same line.
+      // For statements that don't end with `;` or `}` in the source (e.g.
+      // `return x` inside a block where ASI fired at the closing brace),
+      // the result no longer parses. Detect this and either re-inject a `;`
+      // or skip the fix.
+      const tokenAfterBlock = sourceCode.getTokenAfter(blockStatement)
+      const needsAsiGuard =
+        tokenAfterBlock &&
+        tokenAfterBlock.type === 'Keyword' &&
+        (tokenAfterBlock.value === 'else' || tokenAfterBlock.value === 'while') &&
+        tokenAfterBlock.loc.start.line === blockStatement.loc.end.line
+
       context.report({
         node:      blockStatement,
         messageId: 'unnecessaryBraces',
         fix (fixer) {
           const firstToken = sourceCode.getFirstToken(blockStatement)
           const lastToken  = sourceCode.getLastToken(blockStatement)
-          const innerText  = sourceCode.getText(singleStatement)
+          let innerText    = sourceCode.getText(singleStatement)
 
           if (!firstToken || firstToken.value !== '{' || !lastToken || lastToken.value !== '}')
             return null
@@ -188,6 +214,12 @@ function checkUnnecessaryBraces (blockStatement, controllingNode) {
             })
             if (tokensAfter.length > 0)
               return null
+          }
+
+          if (needsAsiGuard) {
+            const trimmed = innerText.replace(/\s+$/, '')
+            if (!trimmed.endsWith(';') && !trimmed.endsWith('}'))
+              innerText = `${trimmed};`
           }
 
           return fixer.replaceTextRange(blockStatement.range, innerText)

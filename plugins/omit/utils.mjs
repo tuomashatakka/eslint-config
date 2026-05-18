@@ -84,8 +84,37 @@ function isParenthesized (node, sourceCode) {
 }
 
 
+// Returns true when `stmt`, if placed where an `else` may follow, would
+// cause the trailing `else` to bind to an inner `if` instead of the outer
+// controlling node (the classic dangling-else hazard).
+export
+
+
+function statementCanAbsorbElse (stmt) {
+  if (!stmt)
+    return false
+
+  switch (stmt.type) {
+    case 'IfStatement':
+      if (!stmt.alternate)
+        return true
+      return statementCanAbsorbElse(stmt.alternate)
+    case 'ForStatement':
+    case 'ForInStatement':
+    case 'ForOfStatement':
+    case 'WhileStatement':
+    case 'WithStatement':
+    case 'LabeledStatement':
+      return statementCanAbsorbElse(stmt.body)
+    default:
+      return false
+  }
+}
+
+
 export default {
   isParenthesized,
   isDeclaration,
   isValidDotNotationIdentifier,
+  statementCanAbsorbElse,
 }
