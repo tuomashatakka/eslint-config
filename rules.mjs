@@ -41,7 +41,7 @@ export const rules = {
   'no-array-constructor':                      [ 'error' ],
   'omit/omit-unnecessary-parens-brackets':     [ 'warn' ],
   'no-inline-types/no-inline-multiline-types': [ 'warn' ],
-  'whitespaced/aligned-assignments':           [ 'warn', { alignMemberAssignments: false, alignTypes: true }],
+  'whitespaced/aligned-assignments':           [ 'warn', { alignTypes: true }],
   '@stylistic/function-call-spacing':          [ 'warn', 'never' ],
   '@stylistic/computed-property-spacing':      [ 'warn', 'never' ],
   '@stylistic/brace-style':                    [ 'warn', 'stroustrup', { allowSingleLine: false }],

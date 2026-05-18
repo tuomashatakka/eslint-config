@@ -8,6 +8,6 @@ class TestRunner {
 
   constructor () {
     this.fixturesDir = path.join('/test', 'fixtures')
-    this.configPath = path.join('/test', '../index.mjs')
+    this.configPath  = path.join('/test', '../index.mjs')
   }
 }

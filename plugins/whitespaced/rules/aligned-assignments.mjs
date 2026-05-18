@@ -31,12 +31,11 @@ export default {
       misalignedTypes:      'Type declarations should be vertically aligned within blocks.',
     },
   },
+
   create (context) {
     const sourceCode = context.sourceCode || context.getSourceCode()
     const options    = context.options[0] || {}
 
-    const alignComments                 = options.alignComments !== undefined ? options.alignComments : false
-    const alignLiterals                 = options.alignLiterals !== undefined ? options.alignLiterals : false
     const blockSize                     = options.blockSize !== undefined ? options.blockSize : 2
     const ignoreAdjacent                = options.ignoreAdjacent !== undefined ? options.ignoreAdjacent : true
     const ignoreIfAssignmentsNotInBlock = options.ignoreIfAssignmentsNotInBlock !== undefined ? options.ignoreIfAssignmentsNotInBlock : true
@@ -45,15 +44,184 @@ export default {
     const alignMemberAssignments        = options.alignMemberAssignments !== undefined ? options.alignMemberAssignments : true
 
 
-    function getEqualsColumn (declarator) {
-      const equalsToken = sourceCode.getTokenBefore(
-        declarator.init,
-        token => token.value === '='
-      )
+    // ── Row collection ────────────────────────────────────────────────────
 
-      return equalsToken ? equalsToken.loc.start.column : null
+    function findEqualsToken (rightNode) {
+      return sourceCode.getTokenBefore(
+        rightNode,
+        token => token.type === 'Punctuator' && token.value === '='
+      )
     }
 
+
+    function declaratorLhsEnd (declarator) {
+      const target = declarator.id?.typeAnnotation ?? declarator.id
+      return { col: target.loc.end.column, idx: target.range[1] }
+    }
+
+
+    function declaratorRow (declarator) {
+      if (!declarator.init)
+        return null
+
+      const equalsToken = findEqualsToken(declarator.init)
+
+      if (!equalsToken)
+        return null
+
+      const { col, idx } = declaratorLhsEnd(declarator)
+
+      return {
+        reportNode: declarator,
+        lhsEndCol:  col,
+        lhsEndIdx:  idx,
+        equalsToken,
+        line:       equalsToken.loc.start.line,
+        kind:       declarator.parent.kind,
+      }
+    }
+
+
+    function memberAssignmentRow (stmt) {
+      const expr = stmt.expression
+
+      if (!expr || expr.type !== 'AssignmentExpression' || expr.operator !== '=' || expr.left.type !== 'MemberExpression')
+        return null
+
+      const equalsToken = findEqualsToken(expr.right)
+
+      if (!equalsToken)
+        return null
+
+      return {
+        reportNode: expr,
+        lhsEndCol:  expr.left.loc.end.column,
+        lhsEndIdx:  expr.left.range[1],
+        equalsToken,
+        line:       equalsToken.loc.start.line,
+        kind:       'member',
+      }
+    }
+
+
+    function collectRows (statements) {
+      const rows = []
+
+      for (const stmt of statements)
+        if (stmt.type === 'VariableDeclaration') {
+          for (const declarator of stmt.declarations) {
+            const row = declaratorRow(declarator)
+            if (row)
+              rows.push(row)
+          }
+        }
+        else if (alignMemberAssignments && stmt.type === 'ExpressionStatement') {
+          const row = memberAssignmentRow(stmt)
+          if (row)
+            rows.push(row)
+        }
+
+      return rows
+    }
+
+
+    // ── Adjacency grouping ────────────────────────────────────────────────
+
+    function groupByAdjacency (rows) {
+      if (rows.length === 0)
+        return []
+
+      const sorted = [ ...rows ].sort((a, b) => a.line - b.line)
+      const groups = []
+      let current  = [ sorted[0] ]
+
+      for (let i = 1; i < sorted.length; i++) {
+        const prev = sorted[i - 1]
+        const row  = sorted[i]
+
+        if (ignoreAdjacent && row.line !== prev.line + 1) {
+          if (current.length >= blockSize)
+            groups.push(current)
+          current = []
+        }
+
+        current.push(row)
+      }
+
+      if (current.length >= blockSize)
+        groups.push(current)
+
+      return ignoreAdjacent ? groups : (rows.length >= blockSize ? [ sorted ] : [])
+    }
+
+
+    // ── Kind-transition sub-block split ───────────────────────────────────
+
+    function splitByKind (group) {
+      if (!ignoreIfAssignmentsNotInBlock)
+        return [ group ]
+
+      const subBlocks = []
+      let current     = []
+      let lockedKind  = null
+
+      for (const row of group)
+        if (row.kind === 'member')
+          current.push(row)
+        else if (lockedKind === null || lockedKind === row.kind) {
+          current.push(row)
+          lockedKind = row.kind
+        }
+        else {
+          if (current.length >= blockSize)
+            subBlocks.push(current)
+          current    = [ row ]
+          lockedKind = row.kind
+        }
+
+      if (current.length >= blockSize)
+        subBlocks.push(current)
+
+      return subBlocks
+    }
+
+
+    // ── Alignment check + fix ─────────────────────────────────────────────
+
+    function checkAndFix (subBlock) {
+      if (subBlock.length < blockSize)
+        return
+
+      const targetEqualsCol = Math.max(...subBlock.map(r => r.lhsEndCol)) + 1
+      const allAligned      = subBlock.every(r => r.equalsToken.loc.start.column === targetEqualsCol)
+
+      if (allAligned)
+        return
+
+      for (const row of subBlock) {
+        const currentCol = row.equalsToken.loc.start.column
+
+        if (currentCol === targetEqualsCol)
+          continue
+
+        context.report({
+          node:      row.reportNode,
+          messageId: 'misalignedAssignment',
+          fix (fixer) {
+            const desiredPad = targetEqualsCol - row.lhsEndCol
+            if (desiredPad < 1)
+              return null
+            return fixer.replaceTextRange(
+              [ row.lhsEndIdx, row.equalsToken.range[0] ],
+              ' '.repeat(desiredPad)
+            )
+          },
+        })
+      }
+    }
+
+
+    // ── Type colon alignment (orthogonal to equals alignment) ─────────────
 
     function getTypeColonColumn (declarator) {
       if (declarator.id && declarator.id.typeAnnotation) {
@@ -64,321 +232,90 @@ export default {
     }
 
 
-    function areNodesAdjacent (node1, node2) {
-      return node2.loc.start.line === node1.loc.end.line + 1
-    }
+    function checkTypeAlignment (declarators) {
+      if (!alignTypes || declarators.length < blockSize)
+        return
 
+      const annotated = declarators.filter(d => d.id?.typeAnnotation)
 
-    function haveSameKind (declarations) {
-      if (!declarations.length)
-        return true
+      if (annotated.length < blockSize)
+        return
 
-      const firstKind = declarations[0].parent.kind
-      return declarations.every(decl => decl.parent.kind === firstKind)
-    }
+      if (ignoreTypesMismatch && annotated.length !== declarators.length)
+        return
 
+      const colonColumns = annotated.map(getTypeColonColumn).filter(c => c !== null)
 
-    function allHaveTypes (declarations) {
-      return declarations.every(decl =>
-        decl.id && decl.id.typeAnnotation
-      )
-    }
+      if (colonColumns.length < blockSize)
+        return
 
+      const maxColonCol = Math.max(...colonColumns)
+      const allAligned  = colonColumns.every(c => c === maxColonCol)
 
-    function anyHaveTypes (declarations) {
-      return declarations.some(decl =>
-        decl.id && decl.id.typeAnnotation
-      )
-    }
+      if (allAligned)
+        return
 
+      for (const declarator of annotated) {
+        const colonCol = getTypeColonColumn(declarator)
 
-    function getMaxEqualsColumn (declarations) {
-      return Math.max(...declarations.map(getEqualsColumn))
-    }
+        if (colonCol === null || colonCol === maxColonCol)
+          continue
 
+        const colonToken = sourceCode.getFirstToken(declarator.id.typeAnnotation)
+        const idEndIdx   = declarator.id.range[1]
+        const desiredPad = maxColonCol - declarator.id.loc.end.column
 
-    function getMaxTypeColonColumn (declarations) {
-      const columns = declarations
-        .map(getTypeColonColumn)
-        .filter(column => column !== null)
+        if (desiredPad < 0)
+          continue
 
-      return columns.length ? Math.max(...columns) : null
-    }
-
-
-function getFixedDeclaration (declarator, targetMaxEqualsColumn) {
-      const originalText = sourceCode.getText(declarator)
-      const idText = sourceCode.getText(declarator.id)
-      const initText = declarator.init ? sourceCode.getText(declarator.init) : ''
-
-      if (!initText)
-        return originalText
-
-      // Get the equals token
-      const equalsToken = sourceCode.getTokenBefore(
-        declarator.init,
-        token => token.value === '='
-      )
-
-      if (!equalsToken)
-        return originalText
-
-      const currentEqualsColumn = equalsToken.loc.start.column
-      const padding = targetMaxEqualsColumn - currentEqualsColumn
-
-      if (padding <= 0)
-        return originalText
-
-      // Build the fixed text: id + padding + '= ' + init
-      const result = idText + ' '.repeat(padding) + '= ' + initText
-
-      return result
-    }
-
-
-    function getIdLengthWithType (declarator) {
-      const idText = sourceCode.getText(declarator.id)
-      if (declarator.id && declarator.id.typeAnnotation) {
-        const typeText = sourceCode.getText(declarator.id.typeAnnotation)
-        return idText.length + 1 + typeText.length
+        context.report({
+          node:      declarator,
+          messageId: 'misalignedTypes',
+          fix (fixer) {
+            return fixer.replaceTextRange(
+              [ idEndIdx, colonToken.range[0] ],
+              ' '.repeat(desiredPad)
+            )
+          },
+        })
       }
-      return idText.length
     }
 
 
-    function checkAlignment (declarations) {
-      if (declarations.length < blockSize)
+    // ── Block processor ───────────────────────────────────────────────────
+
+    function processStatements (statements) {
+      if (!statements || statements.length === 0)
         return
 
-      if (ignoreIfAssignmentsNotInBlock && !haveSameKind(declarations))
-        return
+      const rows = collectRows(statements)
 
-      // Get actual equals column positions
-      const equalsColumns = declarations.map(d => getEqualsColumn(d)).filter(c => c !== null)
+      for (const group of groupByAdjacency(rows))
+        for (const subBlock of splitByKind(group))
+          checkAndFix(subBlock)
 
-      // Check if already aligned by comparing equals columns directly
-      if (equalsColumns.length >= 2) {
-        const maxEqualsCol = Math.max(...equalsColumns)
-        const minEqualsCol = Math.min(...equalsColumns)
-        if (maxEqualsCol === minEqualsCol)
-          return
-      }
+      const declarators = []
+      for (const stmt of statements)
+        if (stmt.type === 'VariableDeclaration')
+          for (const declarator of stmt.declarations)
+            if (declarator.init)
+              declarators.push(declarator)
 
-      const maxIdLength = Math.max(...declarations.map(getIdLengthWithType))
-
-      let maxTypeLength = null
-      if (alignTypes && anyHaveTypes(declarations)) {
-        if (ignoreTypesMismatch && !allHaveTypes(declarations)) {
-          // Skip only type alignment but still do equals alignment
-        }
-        else {
-          const typeLengths = declarations
-            .map(d => d.id?.typeAnnotation ? sourceCode.getText(d.id.typeAnnotation).length : 0)
-            .filter(l => l > 0)
-          maxTypeLength = typeLengths.length ? Math.max(...typeLengths) : null
-        }
-      }
-
-      const maxEqualsColumn = Math.max(...equalsColumns)
-
-      declarations.forEach(declarator => {
-        const equalsCol = getEqualsColumn(declarator)
-
-        if (equalsCol !== null && equalsCol !== maxEqualsColumn)
-          context.report({
-            node:      declarator,
-            messageId: 'misalignedAssignment',
-            fix (fixer) {
-              return fixer.replaceText(
-                declarator,
-                getFixedDeclaration(declarator, maxEqualsColumn)
-              )
-            },
-          })
-      })
-    }
-
-
-    function processDeclarationGroup (declarations) {
-      if (!declarations.length)
-        return
-
-      const declarationsWithInits = declarations.filter(decl => decl.init)
-
-      if (declarationsWithInits.length < blockSize)
-        return
-
-      if (ignoreAdjacent) {
-        const adjacentGroups = []
-        let currentGroup = [ declarationsWithInits[0] ]
-
-        for (let i = 1; i < declarationsWithInits.length; i++) {
-          const prevDecl    = declarationsWithInits[i - 1]
-          const currentDecl = declarationsWithInits[i]
-
-          if (areNodesAdjacent(prevDecl, currentDecl))
-            currentGroup.push(currentDecl); else {
-            if (currentGroup.length >= blockSize)
-              adjacentGroups.push(currentGroup)
-            currentGroup = [ currentDecl ]
-          }
-        }
-
-        if (currentGroup.length >= blockSize)
-          adjacentGroups.push(currentGroup)
-
-        adjacentGroups.forEach(checkAlignment)
-      }
-      else
-        checkAlignment(declarationsWithInits)
-    }
-
-
-    // ── Member assignment alignment (this.prop = value, obj.prop = value) ────
-
-    function getMemberAssignEqualsColumn (exprStmt) {
-      const assignExpr  = exprStmt.expression
-      const equalsToken = sourceCode.getTokenBefore(
-        assignExpr.right,
-        token => token.value === '=' && token.type === 'Punctuator'
-      )
-      return equalsToken ? equalsToken.loc.start.column : null
-    }
-
-
-    function getFixedMemberAssignment (exprStmt, targetMaxLeftLength) {
-      const assignExpr = exprStmt.expression
-      const left       = assignExpr.left
-      const right      = assignExpr.right
-      const leftText   = sourceCode.getText(left)
-      const rightText  = sourceCode.getText(right)
-
-      const leftLength = leftText.length
-      const padding    = targetMaxLeftLength - leftLength
-
-      return leftText + ' '.repeat(padding) + '= ' + rightText
-    }
-
-
-    function getMemberLeftLength (exprStmt) {
-      const left = exprStmt.expression.left
-      return sourceCode.getText(left).trimEnd().length
-    }
-
-
-    function getMemberEqualsColumn (exprStmt) {
-      const assignExpr  = exprStmt.expression
-      const equalsToken = sourceCode.getTokenBefore(
-        assignExpr.right,
-        token => token.value === '=' && token.type === 'Punctuator'
-      )
-      return equalsToken ? equalsToken.loc.start.column : null
-    }
-
-
-    function checkMemberAlignment (stmts) {
-      if (stmts.length < blockSize)
-        return
-
-      const lengths   = stmts.map(getMemberLeftLength)
-      const maxLength = Math.max(...lengths)
-
-      // Check if already aligned by comparing equals columns
-      const equalsColumns = stmts.map(s => getMemberEqualsColumn(s)).filter(c => c !== null)
-      if (equalsColumns.length >= 2) {
-        const maxCol     = Math.max(...equalsColumns)
-        const allAligned = equalsColumns.every(c => c === maxCol)
-        if (allAligned)
-          return
-      }
-
-      stmts.forEach(stmt => {
-        const length = getMemberLeftLength(stmt)
-        if (length !== maxLength)
-          context.report({
-            node:      stmt.expression,
-            messageId: 'misalignedAssignment',
-            fix (fixer) {
-              return fixer.replaceText(stmt.expression, getFixedMemberAssignment(stmt, maxLength))
-            },
-          })
-      })
-    }
-
-
-    function processMemberAssignments (blockBody) {
-      if (!alignMemberAssignments)
-        return
-
-      const memberStmts = blockBody.filter(stmt =>
-        stmt.type === 'ExpressionStatement' &&
-        stmt.expression &&
-        stmt.expression.type === 'AssignmentExpression' &&
-        stmt.expression.operator === '=' &&
-        stmt.expression.left.type === 'MemberExpression'
-      )
-
-      if (memberStmts.length < blockSize)
-        return
-
-      if (ignoreAdjacent) {
-        const groups = []
-        let group    = [ memberStmts[0] ]
-
-        for (let i = 1; i < memberStmts.length; i++)
-          if (areNodesAdjacent(memberStmts[i - 1], memberStmts[i]))
-            group.push(memberStmts[i])
-          else {
-            if (group.length >= blockSize)
-              groups.push(group)
-            group = [ memberStmts[i] ]
-          }
-        if (group.length >= blockSize)
-          groups.push(group)
-        groups.forEach(checkMemberAlignment)
-      }
-      else
-        checkMemberAlignment(memberStmts)
-    }
-
-
-    // ── Shared block processor ─────────────────────────────────────────────
-
-    function processBlockVariables (node) {
-      const scopeBody    = node.type === 'Program' ? node.body : node.body ? node.body : []
-      const declarations = []
-
-      for (const statement of scopeBody)
-        if (statement.type === 'VariableDeclaration')
-          declarations.push(...statement.declarations)
-
-      processDeclarationGroup(declarations)
-      processMemberAssignments(scopeBody)
+      checkTypeAlignment(declarators)
     }
 
 
     return {
       Program (node) {
-        processBlockVariables(node)
+        processStatements(node.body)
       },
 
       BlockStatement (node) {
-        processBlockVariables(node)
+        processStatements(node.body)
       },
 
       SwitchCase (node) {
-        if (!node.consequent)
-          return
-
-        const declarations = []
-        const memberStmts  = []
-
-        for (const statement of node.consequent)
-          if (statement.type === 'VariableDeclaration')
-            declarations.push(...statement.declarations)
-
-        processDeclarationGroup(declarations)
-        processMemberAssignments(node.consequent)
+        processStatements(node.consequent)
       },
     }
   },

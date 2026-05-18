@@ -1,163 +1,109 @@
 # @tuomashatakka/eslint-config
 
-> Opinionated yet functional ESLint configuration with comprehensive TypeScript, React, and JSX support
+Opinionated ESLint flat config for TypeScript, React, and JSX projects. Bundles four in-house plugins (`whitespaced`, `omit`, `no-inline-types`, `react-strict`) on top of `@stylistic`, `typescript-eslint`, and `eslint-plugin-react`.
 
-For Next.js, React and TypeScript projects using modern flat config format.
+Requires ESLint 9.13+.
 
-## 🚀 Recent Updates (v2.5.0)
-
-### ✨ Major Improvements
-- **Removed Tailwind ESLint Plugin** - Streamlined configuration by removing tailwindcss plugin dependency
-- **Migrated React Rules to @stylistic/jsx** - Moved all React styling rules to the dedicated stylistic JSX plugin for better separation of concerns
-- **Updated All Plugins to Latest Versions** - Comprehensive dependency modernization with compatibility fixes
-- **Added Comprehensive Test Suite** - Complete test coverage for formatting scenarios and edge cases
-
-### 🔧 Technical Modernization
-- Updated `@stylistic/eslint-plugin` to v5.2.0
-- Added `@stylistic/eslint-plugin-jsx` for dedicated JSX formatting
-- Fixed deprecated `allowTemplateLiterals` configuration (migrated from boolean to 'always'/'never')
-- Consolidated plugin architecture for better maintainability
-
-## 📦 Installation
+## Installation
 
 ```bash
 npm install --save-dev @tuomashatakka/eslint-config
 ```
 
-## 🔧 Usage
+## Usage
 
-### Using the full config
+Create `eslint.config.mjs` in your project root.
 
-Create an `eslint.config.mjs` file in your project root:
+### Use the full config
 
-```javascript
+```js
 import config from '@tuomashatakka/eslint-config'
 
 export default config
 ```
 
-### Using just the rules
+### Extend or override
 
-If you want to use only the rules in your own config:
-
-```javascript
-import { rules } from '@tuomashatakka/eslint-config'
-
-export default [
-  // Your custom config here
-  {
-    // ...
-    rules
-  }
-]
-```
-
-### Custom Configuration
-
-```javascript
+```js
 import { baseConfig, rules } from '@tuomashatakka/eslint-config'
 
 export default [
   ...baseConfig,
   {
-    // Your custom overrides
     rules: {
       ...rules,
-      'no-console': 'off'
-    }
-  }
+      'no-console': 'off',
+    },
+  },
 ]
 ```
 
-## 🎯 Features
+### Use only the rules
 
-### Code Quality Rules
-- **Complexity Control** - Max complexity: 14, max statements: 40
-- **Functional Patterns** - Encourages functional programming practices
-- **Type Safety** - Comprehensive TypeScript integration
+```js
+import { rules } from '@tuomashatakka/eslint-config'
 
-### Stylistic Formatting
-- **Consistent Spacing** - Aligned object properties, consistent indentation
-- **Modern Syntax** - Arrow functions, template literals, destructuring
-- **JSX Excellence** - Dedicated JSX formatting with proper component patterns
-
-### Plugin Integration
-- **@stylistic/eslint-plugin** - Modern code formatting
-- **@stylistic/eslint-plugin-jsx** - JSX-specific formatting rules
-- **typescript-eslint** - TypeScript language support
-- **eslint-plugin-react** - React component best practices
-- **eslint-plugin-import** - Import/export management
-- **Custom Plugins** - Specialized rules for code quality
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm run test
-
-# Test formatting capabilities
-npm run test:format
-
-# Lint the configuration itself
-npm run lint
+export default [{ rules }]
 ```
 
-### Test Coverage
-- ✅ Basic JavaScript patterns
-- ✅ Complex TypeScript scenarios  
-- ✅ React/JSX components
-- ✅ Edge cases and formatting challenges
+## Rules configuration
 
-## 📋 Structure
+The config bundles four local plugins. Override any rule the same way you would override a standard ESLint rule.
 
-The package uses ESLint's flat config format and has a clean structure:
+### `whitespaced/*`
 
-- `index.mjs` - Exports the full config, baseConfig, and rules
-- `rules.mjs` - Contains all the ESLint rules organized by category
-- `test/` - Comprehensive test suite with fixtures and runners
+| Rule | Description |
+| --- | --- |
+| `whitespaced/aligned-assignments` | Vertically aligns `=` in adjacent declaration and member-assignment blocks. |
+| `whitespaced/block-padding` | Enforces blank-line padding inside blocks, with docstring exceptions. |
+| `whitespaced/class-property-grouping` | Groups class properties by visibility and kind. |
+| `whitespaced/consistent-line-spacing` | Enforces consistent blank lines before and after statements. |
+| `whitespaced/multiline-format` | Enforces consistent formatting for multiline objects and arrays. |
 
-## 🔍 Migration Guide
+Options for `whitespaced/aligned-assignments`:
 
-### From v2.4.0 to v2.5.0
+| Option | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `blockSize` | integer | `2` | Minimum number of adjacent assignments before alignment applies. |
+| `ignoreAdjacent` | boolean | `true` | Only align rows on consecutive lines. |
+| `ignoreIfAssignmentsNotInBlock` | boolean | `true` | Split a group at every declaration-kind transition (`const` → `let`). Member assignments are wildcards and join any sub-block. |
+| `alignTypes` | boolean | `false` | Also align type-annotation colons. |
+| `ignoreTypesMismatch` | boolean | `true` | Skip colon alignment when only some rows have type annotations. |
+| `alignMemberAssignments` | boolean | `true` | Include `obj.prop = …` lines in alignment blocks alongside `const`/`let`/`var`. |
 
-1. **Remove tailwindcss dependency** (if manually installed)
-2. **Update package.json** - Latest versions are automatically handled
-3. **No breaking changes** - All existing code continues to work
-4. **Enhanced JSX support** - Better formatting for React components
+### `omit/omit-unnecessary-parens-brackets`
 
-### Deprecated Configurations
-- `allowTemplateLiterals: true` → `allowTemplateLiterals: 'always'`
-- Tailwind CSS rules removed (use dedicated Tailwind tools instead)
+Removes unnecessary parentheses, brackets, and braces. No options.
 
-## 🐛 Troubleshooting
+### `no-inline-types/no-inline-multiline-types`
 
-### Common Issues
+Disallows inline multi-line `TSTypeLiteral` annotations; requires extraction to a named `type` or `interface`. No options.
 
-**Template literal warnings:**
-- Update to v2.5.0+ for the fixed configuration
+### `react-strict/*`
 
-**JSX formatting issues:**
-- Ensure you're using files with proper extensions (.jsx, .tsx)
-- Check that React is properly detected in settings
+| Rule | Description |
+| --- | --- |
+| `react-strict/jsx-prop-layout` | Enforces JSX prop ordering: `key`/`ref`, then `className`/`style`, then `data-`/`aria-`, then regular props, callbacks last. |
+| `react-strict/no-complex-jsx-map` | Disallows complex `.map()` callbacks with inline logic inside JSX. |
+| `react-strict/no-jsx-value-calculations` | Disallows value calculations and assignments inside JSX return blocks. |
+| `react-strict/no-nested-divs` | Disallows nested `<div>` elements in favor of semantic HTML5 tags. |
+| `react-strict/no-style-prop` | Disallows the inline `style` prop except in drag/drop interactions. |
+| `react-strict/prefer-no-use-effect` | Discourages `useEffect` in favor of context, custom hooks, or event-driven patterns. |
 
-**TypeScript parsing errors:**
-- Verify your tsconfig.json is valid
-- Ensure proper file extensions (.ts, .tsx)
+## Package structure
 
-## 📈 Performance
+- `index.mjs` — exports `config` (default), `baseConfig`, and `rules`.
+- `rules.mjs` — the rule map.
+- `plugins/` — local plugin sources.
+- `test/` — fixtures and runner.
 
-- **Zero runtime dependencies** in production
-- **Fast linting** with optimized rule selection
-- **Minimal plugin surface area** for better performance
-- **Comprehensive but efficient** rule set
+## Scripts
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new rules
-4. Run the test suite: `npm run test`
-5. Submit a pull request
+```bash
+npm run lint        # lint the config itself
+npm run test        # run all fixture tests
+npm run test:format # run formatting-only fixtures
+```
 
 ## License
 
