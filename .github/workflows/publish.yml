@@ -2,7 +2,8 @@ name: Publish to npm
 
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+    paths: ['package.json']
 
 jobs:
   publish:
@@ -12,34 +13,47 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          fetch-depth: 2
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Detect version change
+        id: version
+        run: |
+          CURRENT=$(jq -r .version package.json)
+          PREVIOUS=$(git show HEAD~1:package.json 2>/dev/null | jq -r .version 2>/dev/null || echo "")
+          echo "CURRENT=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "PREVIOUS=$PREVIOUS" >> "$GITHUB_OUTPUT"
+          if [ "$CURRENT" != "$PREVIOUS" ] && [ -n "$CURRENT" ]; then
+            echo "CHANGED=true" >> "$GITHUB_OUTPUT"
+            echo "Version bumped: $PREVIOUS -> $CURRENT"
+          else
+            echo "CHANGED=false" >> "$GITHUB_OUTPUT"
+            echo "No version change ($CURRENT); skipping publish."
+          fi
+
       - uses: actions/setup-node@v4
+        if: steps.version.outputs.CHANGED == 'true'
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
           cache: npm
 
-      - name: Extract version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+      - if: steps.version.outputs.CHANGED == 'true'
+        run: npm ci
 
-      - name: Sync package.json version with tag
-        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version
-
-      - run: npm ci
-      - run: npm run test
+      - if: steps.version.outputs.CHANGED == 'true'
+        run: npm run test
 
       - name: Publish to npm
+        if: steps.version.outputs.CHANGED == 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Commit version bump back to main
+      - name: Tag release
+        if: steps.version.outputs.CHANGED == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json
-          git commit -m "${{ steps.version.outputs.VERSION }}" || echo "No changes to commit"
-          git push origin main
+          git tag "v${{ steps.version.outputs.CURRENT }}"
+          git push origin "v${{ steps.version.outputs.CURRENT }}"
