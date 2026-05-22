@@ -1,59 +1,26 @@
-name: Publish to npm
+name: Publish Package
 
 on:
   push:
-    branches: [main]
-    paths: ['package.json']
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
         with:
-          fetch-depth: 2
-
-      - name: Detect version change
-        id: version
-        run: |
-          CURRENT=$(jq -r .version package.json)
-          PREVIOUS=$(git show HEAD~1:package.json 2>/dev/null | jq -r .version 2>/dev/null || echo "")
-          echo "CURRENT=$CURRENT" >> "$GITHUB_OUTPUT"
-          echo "PREVIOUS=$PREVIOUS" >> "$GITHUB_OUTPUT"
-          if [ "$CURRENT" != "$PREVIOUS" ] && [ -n "$CURRENT" ]; then
-            echo "CHANGED=true" >> "$GITHUB_OUTPUT"
-            echo "Version bumped: $PREVIOUS -> $CURRENT"
-          else
-            echo "CHANGED=false" >> "$GITHUB_OUTPUT"
-            echo "No version change ($CURRENT); skipping publish."
-          fi
-
-      - uses: actions/setup-node@v4
-        if: steps.version.outputs.CHANGED == 'true'
-        with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
-          cache: npm
-
-      - if: steps.version.outputs.CHANGED == 'true'
-        run: npm ci
-
-      - if: steps.version.outputs.CHANGED == 'true'
-        run: npm run test
-
-      - name: Publish to npm
-        if: steps.version.outputs.CHANGED == 'true'
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Tag release
-        if: steps.version.outputs.CHANGED == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "v${{ steps.version.outputs.CURRENT }}"
-          git push origin "v${{ steps.version.outputs.CURRENT }}"
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false  # never use caching in release builds
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+      - run: npm publish  # Or: npm stage publish
