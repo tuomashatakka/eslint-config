@@ -198,26 +198,34 @@ export default {
       if (allAligned)
         return
 
-      for (const row of subBlock) {
-        const currentCol = row.equalsToken.loc.start.column
+      // Report the entire block as a single issue
+      const firstRow = subBlock[0]
+      const lastRow  = subBlock[subBlock.length - 1]
+      
+      context.report({
+        loc: {
+          start: firstRow.reportNode.loc.start,
+          end:   lastRow.reportNode.loc.end,
+        },
+        messageId: 'misalignedAssignment',
+        fix (fixer) {
+          const fixes = []
+          for (const row of subBlock) {
+            const currentCol = row.equalsToken.loc.start.column
+            if (currentCol === targetEqualsCol)
+              continue
 
-        if (currentCol === targetEqualsCol)
-          continue
-
-        context.report({
-          node:      row.reportNode,
-          messageId: 'misalignedAssignment',
-          fix (fixer) {
             const desiredPad = targetEqualsCol - row.lhsEndCol
-            if (desiredPad < 1)
-              return null
-            return fixer.replaceTextRange(
-              [ row.lhsEndIdx, row.equalsToken.range[0] ],
-              ' '.repeat(desiredPad)
-            )
-          },
-        })
-      }
+            if (desiredPad >= 1) {
+              fixes.push(fixer.replaceTextRange(
+                [ row.lhsEndIdx, row.equalsToken.range[0] ],
+                ' '.repeat(desiredPad)
+              ))
+            }
+          }
+          return fixes.length > 0 ? fixes : null
+        },
+      })
     }
 
 
@@ -255,30 +263,42 @@ export default {
       if (allAligned)
         return
 
-      for (const declarator of annotated) {
-        const colonCol = getTypeColonColumn(declarator)
+      // Report the entire block as a single issue
+      const firstDecl = annotated[0]
+      const lastDecl  = annotated[annotated.length - 1]
+      
+      context.report({
+        loc: {
+          start: firstDecl.loc.start,
+          end:   lastDecl.loc.end,
+        },
+        messageId: 'misalignedTypes',
+        fix (fixer) {
+          const fixes = []
+          for (const declarator of annotated) {
+            const colonCol = getTypeColonColumn(declarator)
 
-        if (colonCol === null || colonCol === maxColonCol)
-          continue
+            if (colonCol === null || colonCol === maxColonCol)
+              continue
 
-        const colonToken = sourceCode.getFirstToken(declarator.id.typeAnnotation)
-        const idEndIdx   = declarator.id.range[1]
-        const desiredPad = maxColonCol - declarator.id.loc.end.column
+            const colonToken = sourceCode.getFirstToken(declarator.id.typeAnnotation)
+            const idEndIdx   = declarator.id.range[1]
+            const desiredPad = maxColonCol - colonToken.loc.start.column
 
-        if (desiredPad < 0)
-          continue
-
-        context.report({
-          node:      declarator,
-          messageId: 'misalignedTypes',
-          fix (fixer) {
-            return fixer.replaceTextRange(
-              [ idEndIdx, colonToken.range[0] ],
-              ' '.repeat(desiredPad)
-            )
-          },
-        })
-      }
+            if (desiredPad > 0) {
+              fixes.push(fixer.replaceTextRange(
+                [ colonToken.range[0], colonToken.range[0] ],
+                ' '.repeat(desiredPad)
+              ))
+            } else if (desiredPad < 0) {
+              // Colon is too far to the right, need to move it left
+              // This is more complex, so we'll skip it for now
+              continue
+            }
+          }
+          return fixes.length > 0 ? fixes : null
+        },
+      })
     }
 
 
