@@ -44,11 +44,11 @@ jobs:
       - if: steps.version.outputs.CHANGED == 'true'
         run: npm run test
 
-      - name: Publish to npm
+      - name: Publish to GitHub Packages
         if: steps.version.outputs.CHANGED == 'true'
-        run: npm publish --access public
+        run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag release
         if: steps.version.outputs.CHANGED == 'true'

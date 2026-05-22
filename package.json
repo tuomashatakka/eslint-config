@@ -20,6 +20,9 @@
     "url": "https://github.com/tuomashatakka/eslint-config/issues"
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "peerDependencies": {
     "eslint": ">=9.13.0",
     "react": "*",
