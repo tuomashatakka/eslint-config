@@ -1,5 +1,5 @@
 import stylistic from '@stylistic/eslint-plugin'
-import importPlugin from 'eslint-plugin-import'
+import importPlugin from 'eslint-plugin-import-x'
 import noInlineMultilineTypesPlugin from './plugins/no-inline-types/index.mjs'
 import whitespacedPlugin from './plugins/whitespaced/index.mjs'
 import omitPlugin from './plugins/omit/index.mjs'

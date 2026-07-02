@@ -45,10 +45,10 @@ function getPropGroup (name) {
 
 export default {
   meta: {
-    type:    'suggestion',
-    docs:    { description: 'Enforce consistent JSX prop ordering: key/ref first, className/style next, data/aria attrs, then regular props, callbacks last' },
-    fixable: 'code',
-    schema:  [],
+    type:     'suggestion',
+    docs:     { description: 'Enforce consistent JSX prop ordering: key/ref first, className/style next, data/aria attrs, then regular props, callbacks last' },
+    fixable:  'code',
+    schema:   [],
     messages: {
       propOrder: '`{{ current }}` should be placed before `{{ previous }}` ({{ currentGroup }} props should come before {{ previousGroup }} props).',
     },

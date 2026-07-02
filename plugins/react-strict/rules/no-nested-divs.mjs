@@ -24,10 +24,10 @@ function getElementName (node) {
 
 export default {
   meta: {
-    type:    'suggestion',
-    docs:    { description: 'Disallow nested div elements; prefer semantic HTML5 tags' },
-    fixable: null,
-    schema:  [],
+    type:     'suggestion',
+    docs:     { description: 'Disallow nested div elements; prefer semantic HTML5 tags' },
+    fixable:  null,
+    schema:   [],
     messages: {
       noNestedDivs: 'Avoid nesting <div> inside <div>. Use semantic HTML5 elements instead ({{ alternatives }}).',
     },

@@ -10,33 +10,34 @@ export default {
     type: 'suggestion',
     docs: {
       description: 'Omit unnecessary parentheses, brackets, and braces',
-      category:    "Stylistic Issues",
+      category:    'Stylistic Issues',
       recommended: false,
       url:         null,
     },
-    fixable:  "code",
+    fixable:  'code',
     schema:   [],
     messages: {
-      unnecessaryParens:   "Unnecessary parentheses",
-      useDotNotation:      "Use dot notation instead of bracket notation",
-      unnecessaryBraces:   "Unnecessary curly braces",
+      unnecessaryParens: 'Unnecessary parentheses',
+      useDotNotation:    'Use dot notation instead of bracket notation',
+      unnecessaryBraces: 'Unnecessary curly braces',
     }
   },
   create (context) {
-    const sourceCode = context.getSourceCode()
+    const sourceCode = context.sourceCode
 
 
-function checkDotNotation (node) {
+    function checkDotNotation (node) {
       if (node.computed &&
         node.property.type === 'Literal' &&
         typeof node.property.value === 'string' &&
         isValidDotNotationIdentifier(node.property.value) &&
         !node.optional
-      ) context.report({
-          node: node.property,
-          messageId: "useDotNotation",
-          fix(fixer) {
-            const propText      = node.property.value
+      )
+        context.report({
+          node:      node.property,
+          messageId: 'useDotNotation',
+          fix (fixer) {
+            const propText       = node.property.value
             const openingBracket = sourceCode.getTokenBefore(node.property)
             const closingBracket = sourceCode.getTokenAfter(node.property)
 
@@ -50,7 +51,7 @@ function checkDotNotation (node) {
               return null
 
             return fixer.replaceTextRange(
-              [openingBracket.range[0], closingBracket.range[1]],
+              [ openingBracket.range[0], closingBracket.range[1] ],
               `.${propText}`
             )
           }
@@ -58,7 +59,7 @@ function checkDotNotation (node) {
     }
 
 
-function checkUnnecessaryParens (node) {
+    function checkUnnecessaryParens (node) {
       if (!node || !isParenthesized(node, sourceCode))
         return
 
@@ -74,7 +75,7 @@ function checkUnnecessaryParens (node) {
           node:      reportedNode,
           loc:       { start: tokenBefore.loc.start, end: tokenAfter.loc.end },
           messageId: 'unnecessaryParens',
-          fix:       (fixer) => [ fixer.remove(tokenBefore), fixer.remove(tokenAfter) ],
+          fix:       fixer => [ fixer.remove(tokenBefore), fixer.remove(tokenAfter) ],
         })
       }
 
@@ -91,11 +92,11 @@ function checkUnnecessaryParens (node) {
 
       if (node.type === 'Literal' || node.type === 'Identifier') {
         if (parent && (
-          parent.type === 'VariableDeclarator'  && parent.init      === node ||
-          parent.type === 'ReturnStatement'     && parent.argument   === node ||
+          parent.type === 'VariableDeclarator' && parent.init === node ||
+          parent.type === 'ReturnStatement' && parent.argument === node ||
           parent.type === 'ExpressionStatement' && parent.expression === node ||
-          parent.type === 'ArrayExpression'     && parent.elements.includes(node) ||
-          parent.type === 'Property'            && parent.value === node && !parent.method && !parent.shorthand
+          parent.type === 'ArrayExpression' && parent.elements.includes(node) ||
+          parent.type === 'Property' && parent.value === node && !parent.method && !parent.shorthand
         )) {
           reportAndFixUnnecessaryParens(node)
           return
@@ -127,7 +128,7 @@ function checkUnnecessaryParens (node) {
           node,
           loc:       { start: tokenBefore.loc.start, end: tokenAfter.loc.end },
           messageId: 'unnecessaryParens',
-          fix:       (fixer) => {
+          fix:       fixer => {
             const returnToken = sourceCode.getFirstToken(parent)
             return [
               fixer.replaceTextRange([ returnToken.range[1], node.range[0] ], ' '),
@@ -140,7 +141,7 @@ function checkUnnecessaryParens (node) {
     }
 
 
-function checkUnnecessaryBraces (blockStatement, controllingNode) {
+    function checkUnnecessaryBraces (blockStatement, controllingNode) {
       if (!blockStatement || blockStatement.type !== 'BlockStatement')
         return
 
@@ -180,7 +181,7 @@ function checkUnnecessaryBraces (blockStatement, controllingNode) {
       // the result no longer parses. Detect this and either re-inject a `;`
       // or skip the fix.
       const tokenAfterBlock = sourceCode.getTokenAfter(blockStatement)
-      const needsAsiGuard =
+      const needsAsiGuard   =
         tokenAfterBlock &&
         tokenAfterBlock.type === 'Keyword' &&
         (tokenAfterBlock.value === 'else' || tokenAfterBlock.value === 'while') &&
@@ -228,7 +229,7 @@ function checkUnnecessaryBraces (blockStatement, controllingNode) {
     }
 
 
-function checkArrowFunctionBraces (node) {
+    function checkArrowFunctionBraces (node) {
       if (!node.body || node.body.type !== 'BlockStatement')
         return
 
@@ -284,33 +285,33 @@ function checkArrowFunctionBraces (node) {
     }
 
 
-return {
+    return {
       MemberExpression: checkDotNotation,
 
       VariableDeclarator (node) {
- checkUnnecessaryParens(node.init) 
-},
+        checkUnnecessaryParens(node.init)
+      },
       ExpressionStatement (node) {
- checkUnnecessaryParens(node.expression) 
-},
+        checkUnnecessaryParens(node.expression)
+      },
       ReturnStatement (node) {
- checkUnnecessaryParens(node.argument) 
-},
+        checkUnnecessaryParens(node.argument)
+      },
       BinaryExpression (node) {
- checkUnnecessaryParens(node.left); checkUnnecessaryParens(node.right) 
-},
+        checkUnnecessaryParens(node.left); checkUnnecessaryParens(node.right)
+      },
       LogicalExpression (node) {
- checkUnnecessaryParens(node.left); checkUnnecessaryParens(node.right) 
-},
+        checkUnnecessaryParens(node.left); checkUnnecessaryParens(node.right)
+      },
       UnaryExpression (node) {
- checkUnnecessaryParens(node.argument) 
-},
+        checkUnnecessaryParens(node.argument)
+      },
       AwaitExpression (node) {
- checkUnnecessaryParens(node.argument) 
-},
+        checkUnnecessaryParens(node.argument)
+      },
       YieldExpression (node) {
- checkUnnecessaryParens(node.argument) 
-},
+        checkUnnecessaryParens(node.argument)
+      },
       ConditionalExpression (node) {
         checkUnnecessaryParens(node.test)
         checkUnnecessaryParens(node.consequent)
@@ -325,11 +326,11 @@ return {
         checkUnnecessaryParens(node.callee)
       },
       ArrayExpression (node) {
- node.elements.forEach(arg => checkUnnecessaryParens(arg)) 
-},
+        node.elements.forEach(arg => checkUnnecessaryParens(arg))
+      },
       Property (node) {
- checkUnnecessaryParens(node.value) 
-},
+        checkUnnecessaryParens(node.value)
+      },
 
       IfStatement (node) {
         checkUnnecessaryBraces(node.consequent, node)
@@ -337,20 +338,20 @@ return {
           checkUnnecessaryBraces(node.alternate, node)
       },
       ForStatement (node) {
- checkUnnecessaryBraces(node.body, node) 
-},
+        checkUnnecessaryBraces(node.body, node)
+      },
       ForInStatement (node) {
- checkUnnecessaryBraces(node.body, node) 
-},
+        checkUnnecessaryBraces(node.body, node)
+      },
       ForOfStatement (node) {
- checkUnnecessaryBraces(node.body, node) 
-},
+        checkUnnecessaryBraces(node.body, node)
+      },
       WhileStatement (node) {
- checkUnnecessaryBraces(node.body, node) 
-},
+        checkUnnecessaryBraces(node.body, node)
+      },
       DoWhileStatement (node) {
- checkUnnecessaryBraces(node.body, node) 
-},
+        checkUnnecessaryBraces(node.body, node)
+      },
 
       ArrowFunctionExpression (node) {
         checkUnnecessaryParens(node.body)

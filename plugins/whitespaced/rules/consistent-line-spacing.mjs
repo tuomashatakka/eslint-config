@@ -8,12 +8,12 @@ export default {
     type: 'layout',
     docs: {
       description: 'Enforce consistent line spacing before and after statements',
-      category:    "Stylistic Issues",
+      category:    'Stylistic Issues',
       recommended: false,
     },
     fixable: 'whitespace',
     schema:  [{
-      type:       "object",
+      type:       'object',
       properties: {
         beforeImports:      { type: 'integer', minimum: 0, default: 1 },
         afterImports:       { type: 'integer', minimum: 0, default: 1 },
@@ -29,29 +29,29 @@ export default {
         docstringSpacing:   { type: 'integer', minimum: 0, default: 0 },
       },
       additionalProperties: false,
-    },],
+    }],
     messages: {
-      missingLinesBefore:      "Expected {{expected}} empty {{lineText}} before {{nodeType}}, but found {{actual}}.",
-      missingLinesAfter:       "Expected {{expected}} empty {{lineText}} after {{nodeType}}, but found {{actual}}.",
-      incorrectDocstringSpacing: "Expected {{expected}} empty {{lineText}} between docstring and {{nodeType}}, but found {{actual}}.",
+      missingLinesBefore:        'Expected {{expected}} empty {{lineText}} before {{nodeType}}, but found {{actual}}.',
+      missingLinesAfter:         'Expected {{expected}} empty {{lineText}} after {{nodeType}}, but found {{actual}}.',
+      incorrectDocstringSpacing: 'Expected {{expected}} empty {{lineText}} between docstring and {{nodeType}}, but found {{actual}}.',
     },
   },
   create (context) {
-    const sourceCode                                                                                                     = context.sourceCode || context.getSourceCode()
-    const options                                                                                              = context.options[0] || {}
+    const sourceCode = context.sourceCode
+    const options    = context.options[0] || {}
 
-    const beforeImports                                                                                                = options.beforeImports !== undefined ? options.beforeImports : 1
-    const afterImports                                                                                                 = options.afterImports !== undefined ? options.afterImports : 1
-    const beforeExports                                                                                                = options.beforeExports !== undefined ? options.beforeExports : 1
-    const afterExports                                                                                                 = options.afterExports !== undefined ? options.afterExports : 1
-    const beforeClass                                                                                                  = options.beforeClass !== undefined ? options.beforeClass : 2
-    const afterClass                                                                                                   = options.afterClass !== undefined ? options.afterClass : 2
-    const beforeFunction                                                                                               = options.beforeFunction !== undefined ? options.beforeFunction : 2
-    const afterFunction                                                                                                = options.afterFunction !== undefined ? options.afterFunction : 2
-    const beforeComment                                                                                                          = options.beforeComment !== undefined ? options.beforeComment : 1
-    const ignoreTopLevelCode                                                                                                     = options.ignoreTopLevelCode !== undefined ? options.ignoreTopLevelCode : false
-    const skipImportGroups                                                                                                       = options.skipImportGroups !== undefined ? options.skipImportGroups : true
-    const docstringSpacing                                                                                                       = options.docstringSpacing !== undefined ? options.docstringSpacing : 0
+    const beforeImports      = options.beforeImports !== undefined ? options.beforeImports : 1
+    const afterImports       = options.afterImports !== undefined ? options.afterImports : 1
+    const beforeExports      = options.beforeExports !== undefined ? options.beforeExports : 1
+    const afterExports       = options.afterExports !== undefined ? options.afterExports : 1
+    const beforeClass        = options.beforeClass !== undefined ? options.beforeClass : 2
+    const afterClass         = options.afterClass !== undefined ? options.afterClass : 2
+    const beforeFunction     = options.beforeFunction !== undefined ? options.beforeFunction : 2
+    const afterFunction      = options.afterFunction !== undefined ? options.afterFunction : 2
+    const beforeComment      = options.beforeComment !== undefined ? options.beforeComment : 1
+    const ignoreTopLevelCode = options.ignoreTopLevelCode !== undefined ? options.ignoreTopLevelCode : false
+    const skipImportGroups   = options.skipImportGroups !== undefined ? options.skipImportGroups : true
+    const docstringSpacing   = options.docstringSpacing !== undefined ? options.docstringSpacing : 0
 
 
     function isFirstInParent (node) {
@@ -147,21 +147,21 @@ export default {
 
       if (blankLines !== requiredLines)
         context.report({
-          node:        effectiveNode,
-          messageId:   'missingLinesBefore',
-          data: {
+          node:      effectiveNode,
+          messageId: 'missingLinesBefore',
+          data:      {
             expected: requiredLines,
             actual:   blankLines,
             nodeType,
             lineText: requiredLines === 1 ? 'line' : 'lines',
           },
-          fix(fixer) {
+          fix (fixer) {
             return fixer.replaceTextRange(
               [ prevCode.range[1], effectiveNode.range[0] ],
               '\n'.repeat(requiredLines + 1)
-            );
+            )
           },
-        });
+        })
 
       // Also enforce spacing between docstring end and node start
       if (docstring) {
@@ -170,19 +170,19 @@ export default {
           context.report({
             node,
             messageId: 'incorrectDocstringSpacing',
-            data: {
+            data:      {
               expected: docstringSpacing,
               actual:   blankBetween,
               nodeType,
               lineText: docstringSpacing === 1 ? 'line' : 'lines',
             },
-            fix(fixer) {
+            fix (fixer) {
               return fixer.replaceTextRange(
                 [ docstring.range[1], node.range[0] ],
                 '\n'.repeat(docstringSpacing + 1)
-              );
+              )
             },
-          });
+          })
       }
     }
 
@@ -210,25 +210,24 @@ export default {
       if (blankLines !== requiredLines)
         context.report({
           node,
-          messageId: "missingLinesAfter",
-          data: {
+          messageId: 'missingLinesAfter',
+          data:      {
             expected: requiredLines,
-            actual: blankLines,
+            actual:   blankLines,
             nodeType,
-            lineText: requiredLines === 1 ? "line" : "lines",
+            lineText: requiredLines === 1 ? 'line' : 'lines',
           },
-          fix(fixer) {
-            const tokenAfter = sourceCode.getTokenAfter(node, { includeComments: true });
-            if (!tokenAfter) {
-              return null;
-            }
+          fix (fixer) {
+            const tokenAfter = sourceCode.getTokenAfter(node, { includeComments: true })
+            if (!tokenAfter)
+              return null
 
-            const range = [node.range[1], tokenAfter.range[0]];
-            const newLines = "\n".repeat(requiredLines + 1); // +1 because one newline is the end of the current line
+            const range    = [ node.range[1], tokenAfter.range[0] ]
+            const newLines = '\n'.repeat(requiredLines + 1) // +1 because one newline is the end of the current line
 
-            return fixer.replaceTextRange(range, newLines);
+            return fixer.replaceTextRange(range, newLines)
           },
-        });
+        })
     }
 
 

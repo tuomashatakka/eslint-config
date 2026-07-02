@@ -33,7 +33,7 @@ export default {
   },
 
   create (context) {
-    const sourceCode = context.sourceCode || context.getSourceCode()
+    const sourceCode = context.sourceCode
     const options    = context.options[0] || {}
 
     const blockSize                     = options.blockSize !== undefined ? options.blockSize : 2
@@ -108,13 +108,12 @@ export default {
       const rows = []
 
       for (const stmt of statements)
-        if (stmt.type === 'VariableDeclaration') {
+        if (stmt.type === 'VariableDeclaration')
           for (const declarator of stmt.declarations) {
             const row = declaratorRow(declarator)
             if (row)
               rows.push(row)
           }
-        }
         else if (alignMemberAssignments && stmt.type === 'ExpressionStatement') {
           const row = memberAssignmentRow(stmt)
           if (row)
@@ -151,7 +150,7 @@ export default {
       if (current.length >= blockSize)
         groups.push(current)
 
-      return ignoreAdjacent ? groups : (rows.length >= blockSize ? [ sorted ] : [])
+      return ignoreAdjacent ? groups : rows.length >= blockSize ? [ sorted ] : []
     }
 
 
@@ -162,8 +161,8 @@ export default {
         return [ group ]
 
       const subBlocks = []
-      let current     = []
-      let lockedKind  = null
+      let current    = []
+      let lockedKind = null
 
       for (const row of group)
         if (row.kind === 'member')
@@ -201,7 +200,7 @@ export default {
       // Report the entire block as a single issue
       const firstRow = subBlock[0]
       const lastRow  = subBlock[subBlock.length - 1]
-      
+
       context.report({
         loc: {
           start: firstRow.reportNode.loc.start,
@@ -216,12 +215,11 @@ export default {
               continue
 
             const desiredPad = targetEqualsCol - row.lhsEndCol
-            if (desiredPad >= 1) {
+            if (desiredPad >= 1)
               fixes.push(fixer.replaceTextRange(
                 [ row.lhsEndIdx, row.equalsToken.range[0] ],
                 ' '.repeat(desiredPad)
               ))
-            }
           }
           return fixes.length > 0 ? fixes : null
         },
@@ -266,7 +264,7 @@ export default {
       // Report the entire block as a single issue
       const firstDecl = annotated[0]
       const lastDecl  = annotated[annotated.length - 1]
-      
+
       context.report({
         loc: {
           start: firstDecl.loc.start,
@@ -285,16 +283,12 @@ export default {
             const idEndIdx   = declarator.id.range[1]
             const desiredPad = maxColonCol - colonToken.loc.start.column
 
-            if (desiredPad > 0) {
+            if (desiredPad > 0)
               fixes.push(fixer.replaceTextRange(
                 [ colonToken.range[0], colonToken.range[0] ],
                 ' '.repeat(desiredPad)
-              ))
-            } else if (desiredPad < 0) {
-              // Colon is too far to the right, need to move it left
-              // This is more complex, so we'll skip it for now
+              )); else if (desiredPad < 0)
               continue
-            }
           }
           return fixes.length > 0 ? fixes : null
         },

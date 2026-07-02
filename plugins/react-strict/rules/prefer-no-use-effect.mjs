@@ -1,9 +1,9 @@
 export default {
   meta: {
-    type:    'suggestion',
-    docs:    { description: 'Discourage useEffect in favor of React context, custom hooks, or event-driven patterns' },
-    fixable: null,
-    schema:  [],
+    type:     'suggestion',
+    docs:     { description: 'Discourage useEffect in favor of React context, custom hooks, or event-driven patterns' },
+    fixable:  null,
+    schema:   [],
     messages: {
       preferNoUseEffect: 'Consider alternatives to useEffect. Extract side effects into React context, a custom hook in a separate module, or use event-driven patterns.',
     },

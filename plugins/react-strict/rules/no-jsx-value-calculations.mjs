@@ -57,10 +57,10 @@ function isInsideReturnJSX (node) {
 
 export default {
   meta: {
-    type:    'suggestion',
-    docs:    { description: 'Disallow value calculations and assignments inside JSX return blocks' },
-    fixable: null,
-    schema:  [],
+    type:     'suggestion',
+    docs:     { description: 'Disallow value calculations and assignments inside JSX return blocks' },
+    fixable:  null,
+    schema:   [],
     messages: {
       noJsxCalculations: 'Move value calculations and assignments outside the return block. Compute values before the return statement.',
     },

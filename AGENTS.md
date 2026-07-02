@@ -10,7 +10,8 @@ npm run test:format # test formatting rules only
 
 ## Key Facts
 
-- **ESLint flat config** (not legacy .eslintrc). Main entry: `index.mjs` exports `config`, `baseConfig`, `rules`
+- **ESLint 10 flat config** (not legacy .eslintrc). Main entry: `index.mjs` exports `config`, `baseConfig`, `rules`
+- **ESLint 10**: `context.getSourceCode()` removed — use `context.sourceCode` in custom rules
 - **Custom test runners**: `test/test-runner.mjs` and `test/format-cases.mjs` - not jest/vitest
 - **Local plugins** in `plugins/`:
   - `no-inline-types/` - prevents inline multiline type annotations

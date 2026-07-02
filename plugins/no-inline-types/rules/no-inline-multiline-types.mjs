@@ -19,7 +19,7 @@ const rule = {
       recommended: false,
       url:         null,
     },
-    fixable:  "code",
+    fixable:  'code',
     schema:   [],
     messages: {
       inlineType: 'Inline type literal annotations are disallowed. Extract to a named interface or type alias.',
@@ -27,7 +27,7 @@ const rule = {
   },
 
   create (context) {
-    const sourceCode = context.getSourceCode()
+    const sourceCode = context.sourceCode
 
 
     function findInsertionPointAncestor (startNode) {
@@ -137,10 +137,10 @@ const rule = {
           node:      literalNode,
           messageId: 'inlineType',
           fix (fixer) {
-            const newTypeName        = deriveTypeName(typeAnnotationNode)
-            const literalText        = sourceCode.getText(literalNode)
-            const typeAliasString    = `type ${newTypeName} = ${literalText};\n\n`
-            const insertionAncestor  = findInsertionPointAncestor(typeAnnotationNode)
+            const newTypeName       = deriveTypeName(typeAnnotationNode)
+            const literalText       = sourceCode.getText(literalNode)
+            const typeAliasString   = `type ${newTypeName} = ${literalText};\n\n`
+            const insertionAncestor = findInsertionPointAncestor(typeAnnotationNode)
 
             if (!insertionAncestor)
               return null
