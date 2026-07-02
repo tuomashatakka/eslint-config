@@ -26,5 +26,6 @@ npm run test:format # test formatting rules only
 
 ## Dependencies
 
-- Peer deps: `eslint >=9.13.0`, `react`, `typescript`
-- Package uses ESLint 9.x flat config format
+- Peer deps: `eslint >=10.0.0`, `react`, `typescript`
+- Replaced `eslint-plugin-react` + `eslint-plugin-react-hooks` with `@eslint-react/eslint-plugin`
+- Package uses ESLint 10 flat config format

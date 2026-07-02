@@ -1,8 +1,8 @@
 # @tuomashatakka/eslint-config
 
-Opinionated ESLint flat config for TypeScript, React, and JSX projects. Bundles four in-house plugins (`whitespaced`, `omit`, `no-inline-types`, `react-strict`) on top of `@stylistic`, `typescript-eslint`, and `eslint-plugin-react`.
+Opinionated ESLint flat config for TypeScript, React, and JSX projects. Bundles four in-house plugins (`whitespaced`, `omit`, `no-inline-types`, `react-strict`) on top of `@eslint-react`, `@stylistic`, and `typescript-eslint`.
 
-Requires ESLint 9.13+.
+Requires ESLint 10+.
 
 ## Installation
 
