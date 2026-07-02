@@ -1,14 +1,13 @@
 {
   "name": "@tuomashatakka/eslint-config",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Default eslint configuration",
   "type": "module",
   "main": "index.mjs",
   "scripts": {
     "lint": "eslint plugins --config index.mjs",
     "test": "node test/test-runner.mjs",
-    "test:format": "node test/format-cases.mjs",
-    "postinstall": "patch-package"
+    "test:format": "node test/format-cases.mjs"
   },
   "repository": {
     "type": "git",
@@ -27,24 +26,17 @@
     "typescript": "*"
   },
   "dependencies": {
+    "@eslint-react/eslint-plugin": "^5.10.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/react": "^19.2.14",
     "eslint": "^10.0.0",
     "eslint-plugin-import-x": "^4.17.1",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^16.5.0",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.58.0"
   },
-  "overrides": {
-    "eslint-plugin-react": {
-      "eslint": "$eslint"
-    }
-  },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
-    "@types/eslint__js": "^9.14.0",
-    "patch-package": "^8.0.1"
+    "@types/eslint__js": "^9.14.0"
   }
 }
