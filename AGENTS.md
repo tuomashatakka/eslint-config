@@ -28,7 +28,7 @@ npm run typecheck   # tsc over *.d.mts + test/types.test.mts
 ## CI / Publish
 
 - CI: `.github/workflows/ci.yml` - runs on Node 22, 24 (unicorn requires Node >=22)
-- Publish: `.github/workflows/publish.yml` - triggers on `v*` tags (`npm version <bump>` then `git push --follow-tags`), publishes to GitHub Packages
+- Publish: `.github/workflows/publish.yml` - triggers on `v*` tags (`npm version <bump> -m "%s"` then `git push --follow-tags`) or `workflow_dispatch`; publishes to **both** GitHub Packages (`GITHUB_TOKEN`) and registry.npmjs.org (OIDC trusted publishing with provenance, `NPM_TOKEN` secret as fallback). Both publish steps skip versions that already exist, so re-running is safe. The npm step uses its own `.npmrc` because setup-node's GitHub Packages config maps the `@tuomashatakka` scope to npm.pkg.github.com
 
 ## Dependencies
 
