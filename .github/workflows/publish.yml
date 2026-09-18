@@ -41,16 +41,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
-
       # Authenticates through OIDC trusted publishing when the package on npmjs.com lists this
       # repo + workflow as a trusted publisher; otherwise falls back to the NPM_TOKEN secret.
+      # Uses a dedicated .npmrc: setup-node's GitHub Packages config above also maps the
+      # @tuomashatakka scope to npm.pkg.github.com, which would hijack this publish.
       - name: Publish to npm
         run: |
+          printf '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\nregistry=https://registry.npmjs.org/\n' > "$NPM_CONFIG_USERCONFIG"
           if npm view "$PACKAGE_SPEC" version >/dev/null 2>&1; then
             echo "$PACKAGE_SPEC is already on npm, skipping"
           else
@@ -58,3 +55,4 @@ jobs:
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_USERCONFIG: ${{ runner.temp }}/.npmrc-npmjs
