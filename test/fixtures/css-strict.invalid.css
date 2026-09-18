@@ -1,0 +1,21 @@
+/* expect-warning: css-strict/block-spacing */
+/* expect-warning: css-strict/block-padding */
+/* expect-warning: css-strict/declaration-spacing */
+/* expect-warning: css-strict/indent */
+/* expect-warning: css-strict/prefer-nesting */
+/* expect-warning: css/prefer-logical-properties */
+/* expect-warning: unicorn/prefer-media-feature-range-syntax */
+.card{
+  color:red;
+  padding-left : 1rem;
+}
+.card:hover { color: blue; }
+.card .title
+{
+    margin: 0;
+}
+
+
+@media (min-width: 600px) {
+  .card { padding: 2rem }
+}

@@ -2,14 +2,6 @@
  * @fileoverview Disallows inline TSTypeLiteral annotations that span multiple lines.
  */
 
-function toPascalCase (str) {
-  if (!str)
-    return ''
-  str = str.replace(/_([a-z])/g, (match, char) => char.toUpperCase())
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-
 /** @type {import('eslint').Rule.RuleModule} */
 const rule = {
   meta: {
@@ -175,6 +167,14 @@ const rule = {
       },
     }
   },
+}
+
+
+function toPascalCase (str) {
+  if (!str)
+    return ''
+  str = str.replace(/_([a-z])/g, (match, char) => char.toUpperCase())
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 

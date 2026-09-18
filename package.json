@@ -6,8 +6,9 @@
   "main": "index.mjs",
   "scripts": {
     "lint": "eslint plugins --config index.mjs",
-    "test": "node test/test-runner.mjs",
-    "test:format": "node test/format-cases.mjs"
+    "test": "node test/test-runner.mjs && npm run typecheck",
+    "test:format": "node test/format-cases.mjs",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -15,7 +16,7 @@
   },
   "author": "tuomashatakka",
   "license": "ISC",
-  "types": "**/*.d.ts",
+  "types": "./index.d.mts",
   "bugs": {
     "url": "https://github.com/tuomashatakka/eslint-config/issues"
   },
@@ -27,16 +28,44 @@
   },
   "dependencies": {
     "@eslint-react/eslint-plugin": "^5.10.0",
+    "@eslint/css": "^2.0.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/react": "^19.2.14",
-    "eslint": "^10.0.0",
+    "eslint": ">=10.0.0",
     "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-unicorn": "^75.0.0",
     "globals": "^16.5.0",
-    "typescript": "^5.9.0",
+    "typescript": "*",
     "typescript-eslint": "^8.58.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
     "@types/eslint__js": "^9.14.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.mts",
+      "default": "./index.mjs"
+    },
+    "./rules": {
+      "types": "./rules.d.mts",
+      "default": "./rules.mjs"
+    },
+    "./plugins/*": {
+      "types": "./plugins/*/index.d.mts",
+      "default": "./plugins/*/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.mjs",
+    "index.d.mts",
+    "rules.mjs",
+    "rules.d.mts",
+    "plugins",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
   }
 }

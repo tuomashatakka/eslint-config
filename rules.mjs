@@ -1,8 +1,7 @@
 /**
- * @exports {import("eslint/rules").ESLintRules} rules
- * @type {import("@eslint/core").RulesConfig}
+ * Rules applied to JavaScript and TypeScript files
+ * @type {import('eslint').Linter.RulesRecord}
  */
-
 export const rules = {
   '@stylistic/multiline-comment-style': [ 'warn', 'separate-lines', { checkJSDoc: false }],
   '@stylistic/lines-around-comment':    [ 'warn', {
@@ -35,7 +34,6 @@ export const rules = {
   'no-undef':                                  [ 0 ],
   'use-isnan':                                 [ 'error' ],
   'no-obj-calls':                              [ 'error' ],
-  'no-new-native-nonconstructor':              [ 'error' ],
   'no-func-assign':                            [ 'error' ],
   'no-class-assign':                           [ 'error' ],
   'no-array-constructor':                      [ 'error' ],
@@ -149,6 +147,51 @@ export const rules = {
   'react-strict/prefer-no-use-effect':      [ 'warn' ],
   'react-strict/no-jsx-value-calculations': [ 'warn' ],
   'react-strict/jsx-prop-layout':           [ 'warn' ],
+  'ordered/top-level-definitions':          [ 'warn' ],
+
+  'unicorn/new-for-builtins':               [ 'error' ],
+  'unicorn/no-new-array':                   [ 'warn' ],
+  'unicorn/prefer-number-properties':       [ 'warn' ],
+  'unicorn/no-zero-fractions':              [ 'warn' ],
+  'unicorn/empty-brace-spaces':             [ 'warn' ],
+  'unicorn/consistent-class-member-order':  [ 'warn' ],
+}
+
+/**
+ * Rules applied to CSS files (`css/css` language)
+ * @type {import('eslint').Linter.RulesRecord}
+ */
+export const cssRules = {
+  'css/no-duplicate-imports':                  [ 'error' ],
+  'css/no-duplicate-keyframe-selectors':       [ 'error' ],
+  'css/no-invalid-at-rules':                   [ 'error' ],
+  'css/no-invalid-at-rule-placement':          [ 'error' ],
+  'css/no-invalid-properties':                 [ 'error' ],
+  'css/no-invalid-named-grid-areas':           [ 'error' ],
+  'css/no-unmatchable-selectors':              [ 'error' ],
+  'css/no-empty-blocks':                       [ 'warn' ],
+  'css/no-important':                          [ 'warn' ],
+  'css/font-family-fallbacks':                 [ 'warn' ],
+  'css/use-baseline':                          [ 'warn', { available: 'newly' }],
+  'css/prefer-logical-properties':             [ 'warn' ],
+  'css/relative-font-units':                   [ 'warn' ],
+  'css/selector-complexity':                   [ 'warn', { maxIds: 0, maxCompounds: 4, maxCombinators: 3 }],
+  'css/use-layers':                            [ 'off' ],
+  'unicorn/no-deprecated-css-features':        [ 'warn' ],
+  'unicorn/no-duplicate-css-selectors':        [ 'warn' ],
+  'unicorn/no-duplicate-font-family-names':    [ 'warn' ],
+  'unicorn/no-invalid-media-features':         [ 'warn' ],
+  'unicorn/no-nesting-with-mixed-specificity': [ 'warn' ],
+  'unicorn/no-redundant-nested-style-rules':   [ 'warn' ],
+  'unicorn/no-transition-all':                 [ 'warn' ],
+  'unicorn/no-unknown-pseudo-selectors':       [ 'warn' ],
+  'unicorn/no-unscoped-css-nesting-selector':  [ 'warn' ],
+  'unicorn/prefer-media-feature-range-syntax': [ 'warn' ],
+  'css-strict/block-padding':                  [ 'warn' ],
+  'css-strict/block-spacing':                  [ 'warn' ],
+  'css-strict/declaration-spacing':            [ 'warn' ],
+  'css-strict/indent':                         [ 'warn' ],
+  'css-strict/prefer-nesting':                 [ 'warn' ],
 }
 
 export default rules

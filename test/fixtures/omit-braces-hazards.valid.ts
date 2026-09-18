@@ -1,7 +1,7 @@
 interface Material { uniforms: { time: { value: number }}}
-declare function isAnimatedShader (m: Material): boolean
-
 type MeshType = { material: Material | Material[] | null | undefined }
+
+declare function isAnimatedShader (m: Material): boolean
 
 
 // Dangling-else hazard: the outer braces are load-bearing — without

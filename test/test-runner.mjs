@@ -31,7 +31,8 @@ class ESLintConfigTester {
         file.endsWith('.jsx') ||
         file.endsWith('.ts') ||
         file.endsWith('.tsx') ||
-        file.endsWith('.mjs'))
+        file.endsWith('.mjs') ||
+        file.endsWith('.css'))
 
       if (testFiles.length === 0) {
         console.log('  No test fixtures found in test/fixtures/')
@@ -67,7 +68,7 @@ class ESLintConfigTester {
     const expected = []
 
     for (const line of lines) {
-      const match = line.match(/(?:\/\/|{\s*\/\*)\s*expect-warning:\s*([^\s*]+)/)
+      const match = line.match(/(?:\/\/|\/\*|{\s*\/\*)\s*expect-warning:\s*([^\s*]+)/)
 
       if (match)
         expected.push(match[1].trim())

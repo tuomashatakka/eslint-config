@@ -9,6 +9,11 @@ interface UserCardProps {
   onSelect: (id: string) => void
 }
 
+interface UserListProps {
+  users:    UserCardProps[]
+  onSelect: (id: string) => void
+}
+
 
 const UserCard: React.FC<UserCardProps> = ({ id, name, email, isActive, onSelect }) => {
   const handleClick = useCallback(() => {
@@ -31,12 +36,6 @@ const UserCard: React.FC<UserCardProps> = ({ id, name, email, isActive, onSelect
       Select
     </button>
   </article>
-}
-
-
-interface UserListProps {
-  users:    UserCardProps[]
-  onSelect: (id: string) => void
 }
 
 

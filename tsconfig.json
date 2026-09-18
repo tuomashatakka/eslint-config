@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": [
+    "index.d.mts",
+    "rules.d.mts",
+    "plugins/**/*.d.mts",
+    "test/types.test.mts"
+  ]
+}

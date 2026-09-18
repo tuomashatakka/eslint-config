@@ -30,7 +30,8 @@ class FormatTester {
         file.endsWith('.js') ||
         file.endsWith('.jsx') ||
         file.endsWith('.ts') ||
-        file.endsWith('.tsx')
+        file.endsWith('.tsx') ||
+        file.endsWith('.css')
       )
 
       if (testFiles.length === 0) {
