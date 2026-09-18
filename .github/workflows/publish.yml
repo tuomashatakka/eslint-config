@@ -4,10 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: read
   packages: write
+  id-token: write   # npm trusted publishing (OIDC) + provenance
 
 jobs:
   publish:
@@ -23,6 +25,36 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-      - run: npm publish
+
+      - name: Resolve package spec
+        run: |
+          echo "PACKAGE_SPEC=$(npm pkg get name | tr -d '"')@$(npm pkg get version | tr -d '"')" >> "$GITHUB_ENV"
+
+      # Both publish steps are idempotent so the workflow can be re-run (workflow_dispatch) safely.
+      - name: Publish to GitHub Packages
+        run: |
+          if npm view "$PACKAGE_SPEC" version >/dev/null 2>&1; then
+            echo "$PACKAGE_SPEC is already on GitHub Packages, skipping"
+          else
+            npm publish
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      # Authenticates through OIDC trusted publishing when the package on npmjs.com lists this
+      # repo + workflow as a trusted publisher; otherwise falls back to the NPM_TOKEN secret.
+      - name: Publish to npm
+        run: |
+          if npm view "$PACKAGE_SPEC" version >/dev/null 2>&1; then
+            echo "$PACKAGE_SPEC is already on npm, skipping"
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
