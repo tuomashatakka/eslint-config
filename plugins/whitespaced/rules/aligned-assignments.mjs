@@ -27,8 +27,9 @@ export default {
       additionalProperties: false,
     }],
     messages: {
-      misalignedAssignment: 'Assignment operators should be vertically aligned within blocks.',
-      misalignedTypes:      'Type declarations should be vertically aligned within blocks.',
+      misalignedAssignment:   'Assignment operators should be vertically aligned within blocks.',
+      misalignedTypes:        'Type declarations should be vertically aligned within blocks.',
+      misalignedDeclarations: 'CSS declaration values should be vertically aligned within blocks.',
     },
   },
 
@@ -45,6 +46,94 @@ export default {
 
 
     // ── Row collection ────────────────────────────────────────────────────
+
+    const text = sourceCode.text
+
+    function declarationRow (declaration) {
+      if (!declaration.value)
+        return null
+
+      const propertyEnd      = declaration.loc.start.offset + declaration.property.length
+      const parsedValueStart = declaration.value.loc.start.offset
+      let colonOffset        = propertyEnd
+
+      while (colonOffset < parsedValueStart)
+        if (text.startsWith('/*', colonOffset)) {
+          const commentEnd = text.indexOf('*/', colonOffset + 2)
+
+          if (commentEnd === -1)
+            return null
+
+          colonOffset = commentEnd + 2
+        }
+        else if (text[colonOffset] === ':')
+          break
+        else if ((/\s/).test(text[colonOffset]))
+          colonOffset++
+        else
+          return null
+
+      if (text[colonOffset] !== ':' || text.slice(propertyEnd, colonOffset).trim() !== '')
+        return null
+
+      let valueStart = colonOffset + 1
+
+      while (text[valueStart] === ' ' || text[valueStart] === '\t')
+        valueStart++
+
+      if (text[valueStart] === '\n' || text[valueStart] === '\r' || text.startsWith('/*', valueStart))
+        return null
+
+      const column      = declaration.loc.start.column - 1 + valueStart - declaration.loc.start.offset
+      const colonColumn = declaration.loc.start.column - 1 + colonOffset - declaration.loc.start.offset
+
+      return { declaration, colonOffset, valueStart, column, colonColumn, line: declaration.loc.start.line }
+    }
+
+
+    function checkDeclarationGroup (group) {
+      if (group.length < blockSize)
+        return
+
+      const targetColumn = Math.max(...group.flatMap(row => [ row.column, row.colonColumn + 2 ]))
+
+      if (group.every(row => row.column === targetColumn))
+        return
+
+      context.report({
+        loc:       { start: group[0].declaration.loc.start, end: group[group.length - 1].declaration.loc.end },
+        messageId: 'misalignedDeclarations',
+        fix (fixer) {
+          return group.flatMap(row =>
+            row.column === targetColumn
+              ? []
+              : [ fixer.replaceTextRange([ row.colonOffset + 1, row.valueStart ], ' '.repeat(targetColumn - row.colonColumn - 1)) ])
+        },
+      })
+    }
+
+
+    function checkCssBlock (block) {
+      let group = []
+
+      for (const child of block.children) {
+        const row  = child.type === 'Declaration' ? declarationRow(child) : null
+        const prev = group[group.length - 1]
+
+        if (!row || prev && (ignoreAdjacent && row.line - prev.line > 1 ||
+          sourceCode.comments.some(comment => comment.loc.start.offset >= prev.declaration.loc.end.offset &&
+            comment.loc.end.offset <= child.loc.start.offset))) {
+          checkDeclarationGroup(group)
+          group = []
+        }
+
+        if (row)
+          group.push(row)
+      }
+
+      checkDeclarationGroup(group)
+    }
+
 
     function findEqualsToken (rightNode) {
       return sourceCode.getTokenBefore(
@@ -327,6 +416,8 @@ export default {
       BlockStatement (node) {
         processStatements(node.body)
       },
+
+      Block: checkCssBlock,
 
       SwitchCase (node) {
         processStatements(node.consequent)

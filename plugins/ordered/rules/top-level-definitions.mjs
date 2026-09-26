@@ -79,8 +79,9 @@ function getName (statement, sourceCode) {
 /** @type {import('eslint').Rule.RuleModule} */
 export default {
   meta: {
-    type: 'suggestion',
-    docs: {
+    type:    'suggestion',
+    fixable: 'code',
+    docs:    {
       description: 'Enforce the order of top-level definitions: constants, types, classes, functions',
       category:    'Stylistic Issues',
       recommended: false,
@@ -140,9 +141,10 @@ export default {
         const kinds = new Map(program.body.map(statement => [ unwrapExport(statement), classify(statement) ]))
         let highest = null
 
-        for (const statement of program.body) {
-          const kind = kinds.get(unwrapExport(statement))
-          const rank = kind ? order.indexOf(kind) : -1
+        for (let index = 0; index < program.body.length; index++) {
+          const statement = program.body[index]
+          const kind      = kinds.get(unwrapExport(statement))
+          const rank      = kind ? order.indexOf(kind) : -1
 
           if (rank === -1 || kind === 'constant' && respectDependencies && dependsOnLaterGroup(statement, scope, kinds))
             continue
@@ -157,6 +159,32 @@ export default {
                 prevKind: highest.kind,
                 prevName: getName(highest.statement, sourceCode),
                 order:    order.join(', '),
+              },
+              fix (fixer) {
+                const first    = highest.statement
+                const previous = program.body[index - 1]
+                const next     = program.body[index + 1]
+                const lower    = index > 1 ? program.body[index - 2].range[1] : 0
+                const upper    = next ? next.range[0] : sourceCode.text.length
+                const comments = sourceCode.getAllComments()
+
+                if (first !== previous ||
+                  comments.some(comment => comment.range[0] < statement.range[1] && comment.range[1] > first.range[0]) ||
+                  comments.some(comment => comment.range[0] >= lower && comment.range[1] <= first.range[0]) ||
+                  comments.some(comment => comment.range[0] >= statement.range[1] && comment.range[1] <= upper))
+                  return null
+
+                const gap = sourceCode.text.slice(first.range[1], statement.range[0])
+
+                if (gap.trim() !== '')
+                  return null
+
+                return fixer.replaceTextRange(
+                  [ first.range[0], statement.range[1] ],
+                  sourceCode.text.slice(statement.range[0], statement.range[1]) +
+                    gap +
+                    sourceCode.text.slice(first.range[0], first.range[1])
+                )
               },
             })
             continue

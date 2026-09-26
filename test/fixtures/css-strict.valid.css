@@ -3,7 +3,7 @@
 
 
 :root {
-  --gap: 1rem;
+  --gap:    1rem;
   --accent: oklch(70% 0.2 250);
 
   font-family: "Inter", system-ui, sans-serif;
@@ -11,12 +11,12 @@
 
 
 .card {
-  display: grid;
-  gap: var(--gap);
+  display:        grid;
+  gap:            var(--gap);
   padding-inline: var(--gap);
-  padding-block: 0.5rem;
+  padding-block:  0.5rem;
 
-  color: var(--accent);
+  color:     var(--accent);
   font-size: 1rem;
 
   &:hover {

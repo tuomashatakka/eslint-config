@@ -166,7 +166,8 @@ export const cssRules = {
   'css/no-duplicate-keyframe-selectors':       [ 'error' ],
   'css/no-invalid-at-rules':                   [ 'error' ],
   'css/no-invalid-at-rule-placement':          [ 'error' ],
-  'css/no-invalid-properties':                 [ 'error' ],
+  'css/no-invalid-properties':                 [ 'error', { allowUnknownVariables: true }],
+  'whitespaced/aligned-assignments':           [ 'warn' ],
   'css/no-invalid-named-grid-areas':           [ 'error' ],
   'css/no-unmatchable-selectors':              [ 'error' ],
   'css/no-empty-blocks':                       [ 'warn' ],
@@ -189,7 +190,7 @@ export const cssRules = {
   'unicorn/prefer-media-feature-range-syntax': [ 'warn' ],
   'css-strict/block-padding':                  [ 'warn' ],
   'css-strict/block-spacing':                  [ 'warn' ],
-  'css-strict/declaration-spacing':            [ 'warn' ],
+  'css-strict/declaration-spacing':            [ 'warn', { alignedValues: true }],
   'css-strict/indent':                         [ 'warn' ],
   'css-strict/prefer-nesting':                 [ 'warn' ],
 }

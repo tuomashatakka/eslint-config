@@ -84,7 +84,7 @@ Override any rule the same way you would override a standard ESLint rule.
 
 ### `ordered/top-level-definitions`
 
-Enforces the order of top-level module definitions: constants, then type definitions (`type`, `interface`), then classes, then functions. `export`/`export default` wrappers are looked through, `const fn = () => {}` counts as a function, `const Foo = class {}` as a class and `enum` as a constant. Statements that are none of these (side effects, re-exports) are ignored. Not auto-fixable.
+Enforces the order of top-level module definitions: constants, then type definitions (`type`, `interface`), then classes, then functions. `export`/`export default` wrappers are looked through, `const fn = () => {}` counts as a function, `const Foo = class {}` as a class and `enum` as a constant. Statements that are none of these (side effects, re-exports) are ignored. Safe adjacent definitions are auto-fixed; moves across other statements or comments remain warnings.
 
 | Option | Type | Default | Effect |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ Formatting and structure rules for CSS files, mirroring the JS conventions (`pad
 | --- | --- | --- |
 | `css-strict/block-padding` | yes | Exactly `rootPadding` blank lines between top-level blocks and `nestedPadding` between nested rules; 0 to `nestedPadding` between consecutive declarations; no blank lines at block edges, file start, or after the final newline. Every rule and declaration starts on its own line, closing braces too. |
 | `css-strict/block-spacing` | yes | Exactly one space before `{`. |
-| `css-strict/declaration-spacing` | yes | No space before and exactly one space after `:` (multi-line values allowed). |
+| `css-strict/declaration-spacing` | yes | No space before `:`; one space after by default, or aligned padding when `alignedValues: true` (multi-line values allowed). |
 | `css-strict/indent` | yes | `size` spaces per nesting level for rules, at-rules, declarations, continuation selectors and closing braces. |
 | `css-strict/prefer-nesting` | no | A top-level rule whose selector extends another top-level rule's selector (`.card:hover`, `.card .title`, `.card > .body`) must be nested inside that rule (`&:hover`, `.title`, `> .body`). A top-level `@media`/`@container`/`@supports`/`@starting-style` that only styles one rule must be nested inside it. |
 
@@ -111,12 +111,13 @@ Formatting and structure rules for CSS files, mirroring the JS conventions (`pad
 | `indent` | `size` | integer | `2` |
 | `prefer-nesting` | `ignore` | string[] | `[':root', 'html', 'body', '*']` (never treated as parents) |
 | `prefer-nesting` | `atRules` | boolean | `true` |
+| `declaration-spacing` | `alignedValues` | boolean | `false` |
 
-`cssConfig` also enables `@eslint/css` validity rules as errors (`no-invalid-*`, `no-duplicate-*`, `no-unmatchable-selectors`), `use-baseline` (`available: 'newly'`), `prefer-logical-properties`, `relative-font-units`, `selector-complexity`, `font-family-fallbacks`, `no-important`, and unicorn's CSS rules (`prefer-media-feature-range-syntax`, `no-deprecated-css-features`, `no-redundant-nested-style-rules`, `no-nesting-with-mixed-specificity`, `no-unscoped-css-nesting-selector`, `no-duplicate-css-selectors`, `no-transition-all`, and more) as warnings.
+`cssConfig` also enables `@eslint/css` validity rules as errors (`no-invalid-*`, `no-duplicate-*`, `no-unmatchable-selectors`), `use-baseline` (`available: 'newly'`), `prefer-logical-properties`, `relative-font-units`, `selector-complexity`, `font-family-fallbacks`, `no-important`, and unicorn's CSS rules (`prefer-media-feature-range-syntax`, `no-deprecated-css-features`, `no-redundant-nested-style-rules`, `no-nesting-with-mixed-specificity`, `no-unscoped-css-nesting-selector`, `no-duplicate-css-selectors`, `no-transition-all`, and more) as warnings. `css/no-invalid-properties` allows custom properties that are undefined in the current file, so tokens declared in another stylesheet can be used. Declarations containing unresolved variables skip value validation; property names and resolvable values remain checked.
 
 ### `whitespaced/aligned-assignments`
 
-Vertically aligns `=` in adjacent declaration and member-assignment blocks.
+Vertically aligns `=` in adjacent JS/TS assignment blocks and aligns values after colons in consecutive CSS declaration runs within each block. CSS config enables this alongside `css-strict/declaration-spacing` with aligned values.
 
 | Option | Type | Default | Effect |
 | --- | --- | --- | --- |

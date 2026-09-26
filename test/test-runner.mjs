@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { exec } from 'child_process'
 import { promisify } from 'util'
+import { ESLint } from 'eslint'
 import { readdir, readFile } from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -42,6 +43,7 @@ class ESLintConfigTester {
       for (const file of testFiles)
         await this.testFile(file)
 
+      await this.testAutofixes()
       this.printSummary()
     }
     catch (error) {
@@ -113,6 +115,48 @@ class ESLintConfigTester {
       this.results.failed++
       this.results.errors.push({ file: filename, error: error.message })
     }
+  }
+
+
+  async testAutofixes () {
+    const eslint = new ESLint({
+      overrideConfigFile: this.configPath,
+      fix:               true,
+    })
+
+    const cases = [
+      {
+        name:   'CSS declaration value alignment',
+        source: '.probe {\n  color: red;\n  --long-token: 1px;\n}\n',
+        file:   'alignment.css',
+        check:  output => output.includes('color:        red;'),
+      },
+      {
+        name:   'ordered top-level definitions',
+        source: 'export function later () { return VALUE }\n\nexport const VALUE = 1\n',
+        file:   'ordered-autofix.ts',
+        check:  output => output.indexOf('export const VALUE') < output.indexOf('export function later'),
+      },
+    ]
+
+    for (const testCase of cases)
+      try {
+        const [ result ] = await eslint.lintText(testCase.source, {
+          filePath: path.join(this.fixturesDir, testCase.file),
+        })
+        const output = result.output || testCase.source
+
+        if (result.errorCount || result.warningCount || !testCase.check(output))
+          throw new Error('Autofix did not produce clean output: ' + result.messages.map(message => message.message).join('; '))
+
+        console.log('  PASS — ' + testCase.name + ' autofix')
+        this.results.passed++
+      }
+      catch (error) {
+        console.log('  FAIL — ' + testCase.name + ' autofix: ' + error.message)
+        this.results.failed++
+        this.results.errors.push({ file: testCase.file, error: error.message })
+      }
   }
 
 

@@ -31,9 +31,10 @@ const plugins = {
 }
 
 const cssPlugins = {
-  'css':        css,
-  'unicorn':    unicorn,
-  'css-strict': cssStrictPlugin,
+  'css':         css,
+  'unicorn':     unicorn,
+  'css-strict':  cssStrictPlugin,
+  'whitespaced': whitespacedPlugin,
 }
 
 
