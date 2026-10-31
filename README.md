@@ -1,8 +1,12 @@
 # @tuomashatakka/eslint-config
 
-Opinionated ESLint flat config for TypeScript, React, JSX and CSS projects. Bundles six in-house plugins (`whitespaced`, `omit`, `no-inline-types`, `react-strict`, `ordered`, `css-strict`) on top of `@eslint-react`, `@stylistic`, `typescript-eslint`, `eslint-plugin-unicorn` and `@eslint/css`.
+Opinionated ESLint flat config for TypeScript, React, JSX and CSS projects. Bundles six in-house plugins (`whitespaced`, `omit`, `no-inline-types`, `react-strict`, `ordered`, `css-strict`) on top of `@eslint-react`, `@stylistic`, `typescript-eslint`, `eslint-plugin-unicorn`, `eslint-cssicorn` and `@eslint/css`.
 
-Requires ESLint 10.4+ and Node 22+.
+Requires ESLint 10.4+ and Node 22.15+ (or 23.5+).
+
+### TypeScript 7
+
+TypeScript 7 (the native compiler) no longer ships the JavaScript compiler API that `typescript-eslint` and `@eslint-react` load. Projects can still install `typescript@7` for `tsc`: when `typescript` resolves to 7.x, the config registers a Node resolution hook (`typescript-compat.mjs`) that serves the TypeScript 6 API from `@typescript/typescript6` to the lint stack. Projects on TypeScript ≤ 6 are untouched, and `typescript` is an optional peer dependency.
 
 ## Installation
 
@@ -113,7 +117,7 @@ Formatting and structure rules for CSS files, mirroring the JS conventions (`pad
 | `prefer-nesting` | `atRules` | boolean | `true` |
 | `declaration-spacing` | `alignedValues` | boolean | `false` |
 
-`cssConfig` also enables `@eslint/css` validity rules as errors (`no-invalid-*`, `no-duplicate-*`, `no-unmatchable-selectors`), `use-baseline` (`available: 'newly'`), `prefer-logical-properties`, `relative-font-units`, `selector-complexity`, `font-family-fallbacks`, `no-important`, and unicorn's CSS rules (`prefer-media-feature-range-syntax`, `no-deprecated-css-features`, `no-redundant-nested-style-rules`, `no-nesting-with-mixed-specificity`, `no-unscoped-css-nesting-selector`, `no-duplicate-css-selectors`, `no-transition-all`, and more) as warnings. `css/no-invalid-properties` allows custom properties that are undefined in the current file, so tokens declared in another stylesheet can be used. Declarations containing unresolved variables skip value validation; property names and resolvable values remain checked.
+`cssConfig` also enables `@eslint/css` validity rules as errors (`no-invalid-*`, `no-duplicate-*`, `no-unmatchable-selectors`), `use-baseline` (`available: 'newly'`), `prefer-logical-properties`, `relative-font-units`, `selector-complexity`, `font-family-fallbacks`, `no-important`, `cssicorn` rules (`prefer-media-feature-range-syntax`, `no-deprecated-features`, `no-redundant-nested-style-rules`, `no-nesting-with-mixed-specificity`, `no-unscoped-nesting-selector`, `no-duplicate-selectors`, and more; moved out of unicorn in v79) and `unicorn/no-transition-all` as warnings. `css/no-invalid-properties` allows custom properties that are undefined in the current file, so tokens declared in another stylesheet can be used. Declarations containing unresolved variables skip value validation; property names and resolvable values remain checked.
 
 ### `whitespaced/aligned-assignments`
 
@@ -153,7 +157,9 @@ The JS rule map enables `new-for-builtins` (replaces core `no-new-native-noncons
 
 ## Package structure
 
-- `index.mjs` — exports `config` (default), `baseConfig`, `cssConfig`, `rules`, `cssRules`.
+- `index.mjs` — entry point: registers the TypeScript 7 compatibility hook, then re-exports `config` (default), `baseConfig`, `cssConfig`, `rules`, `cssRules` from `config.mjs`.
+- `config.mjs` — the flat config objects.
+- `typescript-compat.mjs` — redirects `typescript` to the TypeScript 6 API when it resolves to TypeScript 7+.
 - `rules.mjs` — the rule maps.
 - `plugins/` — local plugin sources, each with an `index.d.mts`.
 - `test/` — fixtures (`*.valid.*` must lint clean, `*.invalid.*` list expected warnings), runner and type assertions.

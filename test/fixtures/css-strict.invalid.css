@@ -5,7 +5,7 @@
 /* expect-warning: css-strict/indent */
 /* expect-warning: css-strict/prefer-nesting */
 /* expect-warning: css/prefer-logical-properties */
-/* expect-warning: unicorn/prefer-media-feature-range-syntax */
+/* expect-warning: cssicorn/prefer-media-feature-range-syntax */
 .card{
   color:red;
   padding-left : 1rem;

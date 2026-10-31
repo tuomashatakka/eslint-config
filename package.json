@@ -22,25 +22,32 @@
   },
   "homepage": "https://github.com/tuomashatakka/eslint-config#readme",
   "peerDependencies": {
-    "eslint": ">=10.0.0",
+    "eslint": ">=10.4.0",
     "react": "*",
     "typescript": "*"
   },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
   "dependencies": {
-    "@eslint-react/eslint-plugin": "^5.10.0",
-    "@eslint/css": "^2.0.0",
+    "@eslint-react/eslint-plugin": "^5.28.8",
+    "@eslint/css": "^2.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
-    "@types/react": "^19.2.14",
-    "eslint": ">=10.0.0",
+    "@types/react": "^19.3.0",
+    "@typescript/typescript6": "^6.0.2",
+    "eslint": ">=10.4.0",
+    "eslint-cssicorn": "^0.3.0",
     "eslint-plugin-import-x": "^4.17.1",
-    "eslint-plugin-unicorn": "^75.0.0",
-    "globals": "^16.5.0",
-    "typescript": "*",
-    "typescript-eslint": "^8.58.0"
+    "eslint-plugin-unicorn": "^79.0.0",
+    "globals": "^17.13.0",
+    "typescript-eslint": "^8.72.1"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.0",
-    "@types/eslint__js": "^9.14.0"
+    "@eslint/js": "^10.0.1",
+    "@types/eslint__js": "^9.14.0",
+    "typescript": "^7.0.2"
   },
   "exports": {
     ".": {
@@ -60,12 +67,14 @@
   "files": [
     "index.mjs",
     "index.d.mts",
+    "config.mjs",
+    "typescript-compat.mjs",
     "rules.mjs",
     "rules.d.mts",
     "plugins",
     "README.md"
   ],
   "engines": {
-    "node": ">=22"
+    "node": "^22.15.0 || >=23.5.0"
   }
 }
