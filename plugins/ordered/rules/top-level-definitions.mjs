@@ -28,10 +28,8 @@ function classifyVariable (node) {
 
   if (inits.length && inits.every(init => FUNCTION_EXPRESSIONS.has(init.type)))
     return 'function'
-
   if (inits.length && inits.every(init => init.type === 'ClassExpression'))
     return 'class'
-
   return 'constant'
 }
 

@@ -100,7 +100,7 @@ export const rules = {
   '@stylistic/jsx-curly-spacing':              [ 'warn', { when: 'always', spacing: { objectLiterals: 'never' }}],
   '@stylistic/jsx-pascal-case':                [ 'warn' ],
 
-  '@eslint-react/dom-no-string-style-prop':         [ 'error' ],
+  '@eslint-react/dom-no-string-style-prop':          [ 'error' ],
   '@eslint-react/use-state':                         [ 'warn' ],
   '@eslint-react/jsx-no-useless-fragment':           [ 'warn', { allowExpressions: true }],
   '@eslint-react/dom-no-unsafe-target-blank':        [ 'warn' ],
@@ -112,7 +112,7 @@ export const rules = {
   '@eslint-react/no-missing-key':                    [ 'error' ],
   '@eslint-react/rules-of-hooks':                    [ 'error' ],
   '@eslint-react/exhaustive-deps':                   0,
-  '@stylistic/no-multi-spaces':  [ 'warn', {
+  '@stylistic/no-multi-spaces':                      [ 'warn', {
     exceptions: {
       Property:             true,
       TSTypeAnnotation:     true,
@@ -149,12 +149,12 @@ export const rules = {
   'react-strict/jsx-prop-layout':           [ 'warn' ],
   'ordered/top-level-definitions':          [ 'warn' ],
 
-  'unicorn/new-for-builtins':               [ 'error' ],
-  'unicorn/no-new-array':                   [ 'warn' ],
-  'unicorn/prefer-number-properties':       [ 'warn' ],
-  'unicorn/no-zero-fractions':              [ 'warn' ],
-  'unicorn/empty-brace-spaces':             [ 'warn' ],
-  'unicorn/consistent-class-member-order':  [ 'warn' ],
+  'unicorn/new-for-builtins':              [ 'error' ],
+  'unicorn/no-new-array':                  [ 'warn' ],
+  'unicorn/prefer-number-properties':      [ 'warn' ],
+  'unicorn/no-zero-fractions':             [ 'warn' ],
+  'unicorn/empty-brace-spaces':            [ 'warn' ],
+  'unicorn/consistent-class-member-order': [ 'warn' ],
 }
 
 /**

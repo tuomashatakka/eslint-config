@@ -48,10 +48,7 @@ const RESERVED_WORDS = new Set([
 ])
 
 
-export
-
-
-function isValidDotNotationIdentifier (name) {
+export function isValidDotNotationIdentifier (name) {
   const identifierRegex = /^[\p{L}\p{Nl}$_][\p{L}\p{Nl}\p{Mn}\p{Mc}\p{Nd}\p{Pc}$_]*$/u
   if (typeof name !== 'string' || name.length === 0)
     return false
@@ -59,20 +56,14 @@ function isValidDotNotationIdentifier (name) {
 }
 
 
-export
-
-
-function isDeclaration (statement) {
+export function isDeclaration (statement) {
   return statement.type === 'VariableDeclaration' ||
     statement.type === 'FunctionDeclaration' ||
     statement.type === 'ClassDeclaration'
 }
 
 
-export
-
-
-function isParenthesized (node, sourceCode) {
+export function isParenthesized (node, sourceCode) {
   const previousToken = sourceCode.getTokenBefore(node)
   const nextToken     = sourceCode.getTokenAfter(node)
 
@@ -87,10 +78,7 @@ function isParenthesized (node, sourceCode) {
 // Returns true when `stmt`, if placed where an `else` may follow, would
 // cause the trailing `else` to bind to an inner `if` instead of the outer
 // controlling node (the classic dangling-else hazard).
-export
-
-
-function statementCanAbsorbElse (stmt) {
+export function statementCanAbsorbElse (stmt) {
   if (!stmt)
     return false
 

@@ -37,7 +37,7 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/react": "^19.3.0",
     "@typescript/typescript6": "^6.0.2",
-    "eslint": ">=10.4.0",
+    "eslint": "^10.14.0",
     "eslint-cssicorn": "^0.3.0",
     "eslint-plugin-import-x": "^4.17.1",
     "eslint-plugin-unicorn": "^79.0.0",
@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tuomashatakka/eslint-config": "^4.2.0",
     "@types/eslint__js": "^9.14.0",
     "typescript": "^7.0.2"
   },
